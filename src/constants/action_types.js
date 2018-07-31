@@ -1,0 +1,6 @@
+export const TOKEN_EXPIRED = 'TOKEN_EXPIRED';
+export const CALL_API = 'CALL_API';
+export const FETCH_ITEMS = 'FETCH_ITEMS';
+export const FETCH_ITEMS_SUCCEEDED = 'FETCH_ITEMS_SUCCEEDED';
+export const FETCH_ITEMS_FAILED = 'FETCH_ITEMS_FAILED';
+
