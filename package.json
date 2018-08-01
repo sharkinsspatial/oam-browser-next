@@ -17,7 +17,7 @@
     "typeface-roboto": "^0.0.54"
   },
   "scripts": {
-    "test": "BABEL_ENV=test ./node_modules/.bin/tape -r babel-register ./test/test.js",
+    "test": "NODE_ENV=test ./node_modules/.bin/tape ./test/test.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
