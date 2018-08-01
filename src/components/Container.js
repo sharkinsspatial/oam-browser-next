@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import LogoIcon from './LogoIcon';
+import Map from './Map';
 
 const styles = theme => ({
   root: {
@@ -41,10 +42,12 @@ export const Container = (props) => {
       </AppBar>
       <Grid container spacing={0}>
         <Grid item xs={4}>
-          <div className={classes.item}>xs=4</div>
+          <div className={classes.item}>
+            xs=4
+          </div>
         </Grid>
         <Grid item xs={8}>
-          <div className={classes.item}>xs=8</div>
+          <Map />
         </Grid>
       </Grid>
     </div>
