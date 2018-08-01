@@ -27,7 +27,7 @@ const styles = theme => ({
   },
 });
 
-const Container = (props) => {
+export const Container = (props) => {
   const { classes } = props;
   return (
     <div className={classes.root}>

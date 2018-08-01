@@ -1,10 +1,10 @@
 /* global fetch */
 import { getToken } from '../utils/tokens';
-import { tokenExpired } from '../actions/authActions'
+import { tokenExpired } from '../actions/authActions';
 import { CALL_API } from '../constants/action_types';
 
 
-//const BASE_URL = process.env.REACT_APP_API_URL;
+//  const BASE_URL = process.env.REACT_APP_API_URL;
 const BASE_URL = process.env.PUBLIC_URL;
 
 function callApi(endpoint, method, token, json) {
@@ -20,9 +20,8 @@ function callApi(endpoint, method, token, json) {
   }
 
   return fetch(BASE_URL + endpoint, config)
-    .then(response =>
-      response.text()
-        .then(text => ({ text, response })))
+    .then(response => response.text()
+      .then(text => ({ text, response })))
     .then(({ text, response }) => {
       if (!response.ok) {
         const error = new Error(response.statusText);
