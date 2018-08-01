@@ -19,6 +19,10 @@
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@mapbox/jsonlint-lines-primitives/-/jsonlint-lines-primitives-2.0.2.tgz#ce56e539f83552b58d10d672ea4d6fc9adc7b234"
 
+"@mapbox/mapbox-gl-redux@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-redux/-/mapbox-gl-redux-0.1.0.tgz#0bbad9282478b22568ee4543c2e3f9dc259d5d89"
+
 "@mapbox/mapbox-gl-style-spec@^13.1.0":
   version "13.1.0"
   resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-style-spec/-/mapbox-gl-style-spec-13.1.0.tgz#c89551e42696a2b58ce9cb6263a4dd88f838361e"
@@ -6437,6 +6441,10 @@ react-event-listener@^0.6.0:
     "@babel/runtime" "^7.0.0-beta.42"
     prop-types "^15.6.0"
     warning "^4.0.1"
+
+react-immutable-proptypes@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-immutable-proptypes/-/react-immutable-proptypes-2.1.0.tgz#023d6f39bb15c97c071e9e60d00d136eac5fa0b4"
 
 react-is@^16.4.1:
   version "16.4.1"

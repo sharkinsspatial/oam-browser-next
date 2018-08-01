@@ -1,11 +1,17 @@
 /* eslint no-return-assign: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import mapboxgl from 'mapbox-gl';
 import Measure from 'react-measure';
-// import { diff } from '@mapbox/mapbox-gl-style-spec';
-import * as mapActionCreators from '../actions/mapActions';
+import { diff } from '@mapbox/mapbox-gl-style-spec';
+import Immutable from 'immutable';
+import { ReduxMapControl, MapActionCreators } from '@mapbox/mapbox-gl-redux';
+import * as stylesheetActionCreators
+  from '../actions/stylesheetActionCreators';
+import * as stylesheetSelectors from '../reducers/stylesheetSelector';
 
 class Map extends Component {
   componentDidMount() {
@@ -18,11 +24,37 @@ class Map extends Component {
       zoom: 3,
       attributionControl: false
     };
-    this.map = new mapboxgl.Map(mapConfig);
-    this.map.on('load', () => {
-      const style = this.map.getStyle();
+    const map = new mapboxgl.Map(mapConfig);
+    map.addControl(new ReduxMapControl(map));
+    map.on('load', () => {
+      const style = map.getStyle();
       setStyle(style);
     });
+    this.map = map;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { style } = this.props;
+    const nextStyle = nextProps.style;
+
+    if (!Immutable.is(style, nextStyle)) {
+      const changes = diff(style.toJS(), nextStyle.toJS());
+      changes.forEach((change) => {
+        const { map } = this;
+        map[change.command].apply(map, change.args);
+
+        //if(change.command == 'updateSource'){
+          //// This is a workaround patch for updateSource not being
+          //// low level enough for a generic apply command - dff.js has also
+          //// been patched.
+          //map.getSource(change.args[0]).setData(change.args[1].data);
+        //} else {
+          //console.log(change);
+          //map[change.command].apply(map, change.args);
+        //}
+        
+      });
+    }
   }
 
   render() {
@@ -48,10 +80,18 @@ class Map extends Component {
 }
 
 Map.propTypes = {
-  setStyle: PropTypes.func.isRequired
+  setStyle: PropTypes.func.isRequired,
+  style: ImmutablePropTypes.map.isRequired
 };
 
 const mapStateToProps = state => ({
+  style: stylesheetSelectors.getStyle(state)
 });
 
-export default connect(mapStateToProps, mapActionCreators)(Map);
+const mapDispatchToProps = dispatch => (
+  bindActionCreators(
+    Object.assign({}, stylesheetActionCreators, MapActionCreators), dispatch
+  )
+);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Map);
