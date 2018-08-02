@@ -9,6 +9,7 @@ export default function stylesheetReducer(state = initialState, action) {
       return state.merge({
         style: fromJS(action.payload.style)
       }); }
+
     default: {
       return state;
     }

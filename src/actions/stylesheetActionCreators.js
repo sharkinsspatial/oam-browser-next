@@ -8,3 +8,10 @@ export function setStyle(style) {
     }
   };
 }
+
+export function filterItems(payload) {
+  return {
+    type: types.FILTER_ITEMS,
+    payload
+  };
+}
