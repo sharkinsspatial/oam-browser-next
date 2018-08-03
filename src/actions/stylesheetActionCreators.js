@@ -15,3 +15,10 @@ export function filterItems(payload) {
     payload
   };
 }
+
+export function setClientSize(payload) {
+  return {
+    type: types.SET_CLIENT_SIZE,
+    payload
+  };
+}

@@ -1,4 +1,4 @@
-/* eslint no-return-assign: 0, camelcase: 0, no-param-reassign: 0 */
+/* eslint no-return-assign: 0, camelcase: 0, no-param-reassign: 0, prefer-spread: 0 */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -20,7 +20,9 @@ const addLayers = (map) => {
     clusterLayer,
     clusterCountLayer,
     unclusteredPointLayer,
-    centroidSource
+    centroidSource,
+    imageFootprints,
+    filteredItemsSource
   } = stylesheetConstants;
 
   map.addLayer({
@@ -72,10 +74,24 @@ const addLayers = (map) => {
       'circle-stroke-color': '#fff'
     }
   });
+
+  map.addLayer({
+    id: imageFootprints,
+    type: 'fill',
+    source: filteredItemsSource,
+    layout: {},
+    paint: {
+      'fill-color': '#088',
+      'fill-opacity': ['interpolate', ['linear'], ['get', 'gsd'],
+        0, 0.5,
+        100, 0.1
+      ]
+    }
+  });
 };
 
 const addSources = (map) => {
-  const { centroidSource } = stylesheetConstants;
+  const { centroidSource, filteredItemsSource } = stylesheetConstants;
   const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
   map.addSource(centroidSource, {
     type: 'geojson',
@@ -83,6 +99,15 @@ const addSources = (map) => {
     cluster: true,
     clusterMaxZoom: 14,
     clusterRadius: 50
+  });
+
+  map.addSource(filteredItemsSource, {
+    type: 'geojson',
+    data: {
+      type: 'FeatureCollection',
+      crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+      features: []
+    }
   });
 };
 
@@ -164,8 +189,6 @@ const onClusterClick = (clusterId, centroidSource, filterItems) => {
             false
           ]
         ]];
-        // map.setFilter('clusters', clusterFilter);
-        // map.setFilter('cluster-count', clusterFilter);
 
       const pointFilter = [
         'all',
@@ -181,7 +204,6 @@ const onClusterClick = (clusterId, centroidSource, filterItems) => {
       ];
 
       filterItems({ clusterFilter, pointFilter, featureIds });
-        // map.setFilter('unclustered-point', pointFilter);
         // setVisibleItems(featureIds);
     });
   });
@@ -219,7 +241,7 @@ const mapClickHandler = (e, filterItems) => {
 
 class Map extends Component {
   componentDidMount() {
-    const { setStyle, filterItems } = this.props;
+    const { setStyle, filterItems, setClientSize } = this.props;
     mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhcmtpbnMiLCJhIjoiOFRmb0o1SSJ9.PMTjItrVcqcO8xBfgP1pMw';
     const mapConfig = {
       container: this.node,
@@ -229,7 +251,7 @@ class Map extends Component {
       attributionControl: false
     };
     const map = new mapboxgl.Map(mapConfig);
-    map.addControl(new ReduxMapControl(map));
+    //map.addControl(new ReduxMapControl(map));
     map.on('load', () => {
       addSources(map);
       addLayers(map);
@@ -239,6 +261,10 @@ class Map extends Component {
       });
       const style = map.getStyle();
       setStyle(style);
+      const { clientHeight, clientWidth } = map.getCanvas();
+      setClientSize({ clientWidth, clientHeight });
+      map.on('resize', (e) => {
+      });
     });
     this.map = map;
   }
@@ -246,23 +272,18 @@ class Map extends Component {
   componentWillReceiveProps(nextProps) {
     const { style } = this.props;
     const nextStyle = nextProps.style;
-
     if (!Immutable.is(style, nextStyle)) {
       const changes = diff(style.toJS(), nextStyle.toJS());
       changes.forEach((change) => {
         const { map } = this;
-        map[change.command].apply(map, change.args);
-
-        //if(change.command == 'updateSource'){
-          //// This is a workaround patch for updateSource not being
-          //// low level enough for a generic apply command - dff.js has also
-          //// been patched.
-          //map.getSource(change.args[0]).setData(change.args[1].data);
-        //} else {
-          //console.log(change);
-          //map[change.command].apply(map, change.args);
-        //}
-        
+        if (change.command === 'setGeoJSONSourceData') {
+          // This is a workaround patch for updateSource not being
+          // low level enough for a generic apply command - dff.js has also
+          // been patched.
+          map.getSource(change.args[0]).setData(change.args[1]);
+        } else {
+          map[change.command].apply(map, change.args);
+        }
       });
     }
   }
@@ -290,9 +311,10 @@ class Map extends Component {
 }
 
 Map.propTypes = {
+  style: ImmutablePropTypes.map.isRequired,
   setStyle: PropTypes.func.isRequired,
   filterItems: PropTypes.func.isRequired,
-  style: ImmutablePropTypes.map.isRequired
+  setClientSize: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

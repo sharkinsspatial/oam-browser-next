@@ -2,12 +2,13 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { routerForBrowser, initializeCurrentLocation }
   from 'redux-little-router';
 import thunk from 'redux-thunk';
+//import { mapMiddleware } from '@mapbox/mapbox-gl-redux';
 import reducer from '../reducers/reducer';
 import stylesheetReducer from '../reducers/stylesheetReducer';
 import routes from '../constants/routes';
 import locationMiddleware from './locationMiddleware';
 import apiMiddleware from './apiMiddleware';
-import { mapMiddleware } from '@mapbox/mapbox-gl-redux';
+import filterMiddleware from './filterMiddleware';
 
 
 const {
@@ -24,11 +25,11 @@ const store = createStore(
   }),
   initialState,
   applyMiddleware(
-    mapMiddleware,
     thunk,
     routerMiddleware,
     locationMiddleware,
     apiMiddleware,
+    filterMiddleware
   )
 );
 
