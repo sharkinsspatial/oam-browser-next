@@ -4,6 +4,35 @@ import geoViewport from '@mapbox/geo-viewport';
 import * as actions from '../constants/action_types';
 import * as stylesheetConstants from '../constants/stylesheetConstants';
 
+const buildFilters = (clusterIds, featureIds) => {
+  let clusterFilter;
+  if (clusterIds.length > 1) {
+    clusterFilter = [
+      '!',
+      ['match',
+        ['to-number', ['get', 'cluster_id']],
+        clusterIds,
+        true,
+        false
+      ]
+    ];
+  }
+
+  const unclusteredPointFilter = [
+    'all',
+    ['!',
+      ['has', 'point_count']
+    ],
+    ['match',
+      ['to-string', ['get', 'id']],
+      featureIds,
+      false,
+      true
+    ]
+  ];
+  return { clusterFilter, unclusteredPointFilter };
+};
+
 const filterItems = (state, payload) => {
   const {
     clusterLayer,
@@ -11,22 +40,31 @@ const filterItems = (state, payload) => {
     unclusteredPointLayer
   } = stylesheetConstants;
 
-  const newState = state
-    .updateIn(['style', 'layers'], (list) => {
-      const idx = list.findIndex(layer => layer.get('id') === clusterLayer);
-      return list.setIn([idx, 'filter'], fromJS(payload.clusterFilter));
-    })
-    .updateIn(['style', 'layers'], (list) => {
-      const idx = list.findIndex(layer => layer.get('id') === clusterCountLayer);
-      return list.setIn([idx, 'filter'], fromJS(payload.clusterFilter));
-    })
+  const {
+    clusterFilter,
+    unclusteredPointFilter
+  } = buildFilters(payload.clusterIds, payload.featureIds);
+
+  let clusterFilterState;
+  const filterState = state
     .updateIn(['style', 'layers'], (list) => {
       const idx = list.findIndex(layer => layer.get('id') === unclusteredPointLayer);
-      return list.setIn([idx, 'filter'], fromJS(payload.pointFilter));
+      return list.setIn([idx, 'filter'], fromJS(unclusteredPointFilter));
     })
     .merge({ featureIds: fromJS(payload.featureIds) });
 
-  return newState;
+  if (clusterFilter) {
+    clusterFilterState = filterState
+      .updateIn(['style', 'layers'], (list) => {
+        const idx = list.findIndex(layer => layer.get('id') === clusterLayer);
+        return list.setIn([idx, 'filter'], fromJS(clusterFilter));
+      })
+      .updateIn(['style', 'layers'], (list) => {
+        const idx = list.findIndex(layer => layer.get('id') === clusterCountLayer);
+        return list.setIn([idx, 'filter'], fromJS(clusterFilter));
+      });
+  }
+  return clusterFilterState || filterState;
 };
 
 const setFilteredDataSource = (state, payload) => {
@@ -48,10 +86,14 @@ const setFilteredDataSource = (state, payload) => {
   const viewport = geoViewport.viewport(
     bounds,
     dimensions,
+    undefined,
+    undefined,
+    512,
+    true
   );
   const newState = state
-    .set('center', fromJS(viewport.center))
-    .set('zoom', viewport.zoom)
+    .setIn(['style', 'center'], fromJS(viewport.center))
+    .setIn(['style', 'zoom'], viewport.zoom - 0.5)
     .setIn(['style', 'sources', filteredItemsSource, 'data'],
       fromJS(filteredFeatureCollection));
 

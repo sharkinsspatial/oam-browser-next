@@ -5,10 +5,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import mapboxgl from 'mapbox-gl';
-import Measure from 'react-measure';
 import { diff } from '@mapbox/mapbox-gl-style-spec';
 import Immutable from 'immutable';
-import { ReduxMapControl, MapActionCreators } from '@mapbox/mapbox-gl-redux';
 import async from 'async';
 import * as stylesheetActionCreators
   from '../actions/stylesheetActionCreators';
@@ -174,37 +172,7 @@ const onClusterClick = (clusterId, centroidSource, filterItems) => {
   centroidSource.getClusterLeaves(clusterId, Infinity, 0, (err, features) => {
     const featureIds = features.map(feature => feature.properties.id);
     traverseCluster(centroidSource, clusterId, (clusterIds) => {
-      const clusterFilter = [
-        '!', ['any',
-          ['match',
-            ['to-number', ['get', 'cluster_id']],
-            clusterIds,
-            true,
-            false
-          ],
-          ['match',
-            ['to-string', ['get', 'id']],
-            featureIds,
-            true,
-            false
-          ]
-        ]];
-
-      const pointFilter = [
-        'all',
-        ['!',
-          ['has', 'point_count']
-        ],
-        ['match',
-          ['to-string', ['get', 'id']],
-          featureIds,
-          false,
-          true
-        ]
-      ];
-
-      filterItems({ clusterFilter, pointFilter, featureIds });
-        // setVisibleItems(featureIds);
+      filterItems({ clusterIds, featureIds });
     });
   });
 };
@@ -233,7 +201,7 @@ const mapClickHandler = (e, filterItems) => {
     }
     if (queryFeatures[0].layer.id === unclusteredPointLayer) {
       const { id } = queryFeatures[0].properties;
-      // setVisibleItems([id]);
+      filterItems({ clusterIds: [], featureIds: [id] });
     }
   }
 };
@@ -259,12 +227,17 @@ class Map extends Component {
       map.on('click', (e) => {
         mapClickHandler(e, filterItems);
       });
+
+      map.on('resize', () => {
+        const { clientHeight, clientWidth } = map.getCanvas();
+        setClientSize({ clientWidth, clientHeight });
+      });
+
       const style = map.getStyle();
       setStyle(style);
+
       const { clientHeight, clientWidth } = map.getCanvas();
       setClientSize({ clientWidth, clientHeight });
-      map.on('resize', (e) => {
-      });
     });
     this.map = map;
   }
@@ -296,16 +269,7 @@ class Map extends Component {
       width: '80%'
     };
     return (
-      <Measure onResize={(contentRect) => {
-      }}
-      >
-        {({ measureRef }) => (
-          <div ref={measureRef}>
-            <div id="map" style={style} ref={c => this.node = c} />
-          </div>
-        )
-      }
-      </Measure>
+      <div id="map" style={style} ref={c => this.node = c} />
     );
   }
 }
@@ -323,7 +287,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => (
   bindActionCreators(
-    Object.assign({}, stylesheetActionCreators, MapActionCreators), dispatch
+    Object.assign({}, stylesheetActionCreators), dispatch
   )
 );
 
