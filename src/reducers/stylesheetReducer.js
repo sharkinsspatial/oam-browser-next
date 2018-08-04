@@ -30,19 +30,30 @@ const buildFilters = (clusterIds, featureIds) => {
       true
     ]
   ];
-  return { clusterFilter, unclusteredPointFilter };
+
+  const imagePointsFilter = [
+    'match',
+    ['get', 'id'],
+    featureIds,
+    true,
+    false
+  ];
+
+  return { clusterFilter, unclusteredPointFilter, imagePointsFilter };
 };
 
 const filterItems = (state, payload) => {
   const {
     clusterLayer,
     clusterCountLayer,
-    unclusteredPointLayer
+    unclusteredPointLayer,
+    imagePoints
   } = stylesheetConstants;
 
   const {
     clusterFilter,
-    unclusteredPointFilter
+    unclusteredPointFilter,
+    imagePointsFilter
   } = buildFilters(payload.clusterIds, payload.featureIds);
 
   let clusterFilterState;
@@ -50,6 +61,10 @@ const filterItems = (state, payload) => {
     .updateIn(['style', 'layers'], (list) => {
       const idx = list.findIndex(layer => layer.get('id') === unclusteredPointLayer);
       return list.setIn([idx, 'filter'], fromJS(unclusteredPointFilter));
+    })
+    .updateIn(['style', 'layers'], (list) => {
+      const idx = list.findIndex(layer => layer.get('id') === imagePoints);
+      return list.setIn([idx, 'filter'], fromJS(imagePointsFilter));
     })
     .merge({ featureIds: fromJS(payload.featureIds) });
 
@@ -91,6 +106,7 @@ const setFilteredDataSource = (state, payload) => {
     512,
     true
   );
+
   const newState = state
     .setIn(['style', 'center'], fromJS(viewport.center))
     .setIn(['style', 'zoom'], viewport.zoom - 0.5)

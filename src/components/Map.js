@@ -20,7 +20,9 @@ const addLayers = (map) => {
     unclusteredPointLayer,
     centroidSource,
     imageFootprints,
-    filteredItemsSource
+    filteredItemsSource,
+    imagePointsSource,
+    imagePoints
   } = stylesheetConstants;
 
   map.addLayer({
@@ -86,10 +88,31 @@ const addLayers = (map) => {
       ]
     }
   });
+
+  map.addLayer({
+    id: imagePoints,
+    type: 'circle',
+    source: imagePointsSource,
+    filter: ['==', ['get', 'id'], 0],
+    paint: {
+      'circle-color': '#ff3333',
+      'circle-radius': ['interpolate', ['linear'], ['zoom'],
+        5, 3,
+        10, 4
+      ],
+      'circle-stroke-width': 1,
+      'circle-stroke-color': '#fff'
+    }
+  });
 };
 
 const addSources = (map) => {
-  const { centroidSource, filteredItemsSource } = stylesheetConstants;
+  const {
+    centroidSource,
+    filteredItemsSource,
+    imagePointsSource
+  } = stylesheetConstants;
+
   const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
   map.addSource(centroidSource, {
     type: 'geojson',
@@ -97,6 +120,11 @@ const addSources = (map) => {
     cluster: true,
     clusterMaxZoom: 14,
     clusterRadius: 50
+  });
+
+  map.addSource(imagePointsSource, {
+    type: 'geojson',
+    data: centroidData,
   });
 
   map.addSource(filteredItemsSource, {
@@ -219,7 +247,7 @@ class Map extends Component {
       attributionControl: false
     };
     const map = new mapboxgl.Map(mapConfig);
-    //map.addControl(new ReduxMapControl(map));
+    // map.addControl(new ReduxMapControl(map));
     map.on('load', () => {
       addSources(map);
       addLayers(map);
