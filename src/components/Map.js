@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import mapboxgl from 'mapbox-gl';
 import { diff } from '@mapbox/mapbox-gl-style-spec';
-import Immutable from 'immutable';
 import async from 'async';
 import * as stylesheetActionCreators
   from '../actions/stylesheetActionCreators';
@@ -273,7 +272,9 @@ class Map extends Component {
   componentWillReceiveProps(nextProps) {
     const { style } = this.props;
     const nextStyle = nextProps.style;
-    if (!Immutable.is(style, nextStyle)) {
+    //if (!Immutable.is(style, nextStyle)) {
+    if (style !== nextStyle) {
+      console.log('Style Change');
       const changes = diff(style.toJS(), nextStyle.toJS());
       changes.forEach((change) => {
         const { map } = this;
