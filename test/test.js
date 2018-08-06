@@ -5,4 +5,4 @@ require('babel-register')({
 });
 require('./test_apiMiddleware');
 require('./test_Container');
-require('./test_stylesheetSelector');
+require('./test_stylesheetSelectors');

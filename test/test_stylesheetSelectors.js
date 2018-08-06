@@ -1,6 +1,6 @@
 import test from 'tape';
 import { fromJS } from 'immutable';
-import { getStyle } from '../src/reducers/stylesheetSelector';
+import { getStyle } from '../src/reducers/stylesheetSelectors';
 
 test('getStyle', (t) => {
   const state = {

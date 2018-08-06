@@ -9,7 +9,7 @@ import { diff } from '@mapbox/mapbox-gl-style-spec';
 import async from 'async';
 import * as stylesheetActionCreators
   from '../actions/stylesheetActionCreators';
-import * as stylesheetSelectors from '../reducers/stylesheetSelector';
+import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import * as stylesheetConstants from '../constants/stylesheetConstants';
 
 const addLayers = (map) => {
@@ -293,9 +293,10 @@ class Map extends Component {
   render() {
     const style = {
       position: 'absolute',
-      top: 64,
+      top: 65,
       bottom: 0,
-      width: '80%'
+      width: '75%',
+      overflow: 'hidden'
     };
     return (
       <div id="map" style={style} ref={c => this.node = c} />

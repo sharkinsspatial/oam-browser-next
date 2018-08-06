@@ -7,16 +7,11 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import LogoIcon from './LogoIcon';
 import Map from './Map';
+import ImageItems from './ImageItems';
 
 const styles = theme => ({
   root: {
     flexGrow: 1
-  },
-  item: {
-    padding: theme.spacing.unit * 2,
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    borderStyle: 'solid'
   },
   logoIcon: {
     marginLeft: -12,
@@ -25,7 +20,7 @@ const styles = theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-  },
+  }
 });
 
 export const Container = (props) => {
@@ -41,12 +36,10 @@ export const Container = (props) => {
         </Toolbar>
       </AppBar>
       <Grid container spacing={0}>
-        <Grid item xs={4}>
-          <div className={classes.item}>
-            xs=4
-          </div>
+        <Grid item xs={3}>
+          <ImageItems />
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={9}>
           <Map />
         </Grid>
       </Grid>
@@ -56,8 +49,7 @@ export const Container = (props) => {
 
 Container.propTypes = {
   classes: PropTypes.shape({
-    root: PropTypes.string.isRequired,
-    item: PropTypes.string.isRequired
+    root: PropTypes.string.isRequired
   }).isRequired
 };
 
