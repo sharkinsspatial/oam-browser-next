@@ -7,6 +7,7 @@ import { bindActionCreators } from 'redux';
 import mapboxgl from 'mapbox-gl';
 import { diff } from '@mapbox/mapbox-gl-style-spec';
 import async from 'async';
+import withWidth from '@material-ui/core/withWidth';
 import * as stylesheetActionCreators
   from '../actions/stylesheetActionCreators';
 import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
@@ -291,6 +292,8 @@ class Map extends Component {
   }
 
   render() {
+    const { width } = this.props;
+    let mapDiv;
     const style = {
       position: 'absolute',
       top: 65,
@@ -298,9 +301,12 @@ class Map extends Component {
       width: '75%',
       overflow: 'hidden'
     };
-    return (
-      <div id="map" style={style} ref={c => this.node = c} />
-    );
+    if (width === 'xs') {
+      mapDiv = <div />;
+    } else {
+      mapDiv = <div id="map" style={style} ref={c => this.node = c} />;
+    }
+    return mapDiv;
   }
 }
 
@@ -308,7 +314,8 @@ Map.propTypes = {
   style: ImmutablePropTypes.map.isRequired,
   setStyle: PropTypes.func.isRequired,
   filterItems: PropTypes.func.isRequired,
-  setClientSize: PropTypes.func.isRequired
+  setClientSize: PropTypes.func.isRequired,
+  width: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({
@@ -321,4 +328,4 @@ const mapDispatchToProps = dispatch => (
   )
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(Map);
+export default connect(mapStateToProps, mapDispatchToProps)(withWidth()(Map));

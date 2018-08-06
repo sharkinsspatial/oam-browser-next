@@ -20,6 +20,10 @@ const styles = theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+  },
+  sidebar: {
+    padding: theme.spacing.unit,
+    color: theme.palette.text.secondary,
   }
 });
 
@@ -36,10 +40,10 @@ export const Container = (props) => {
         </Toolbar>
       </AppBar>
       <Grid container spacing={0}>
-        <Grid item xs={3}>
+        <Grid className={classes.sidebar} item xs={12} sm={6} md={3}>
           <ImageItems />
         </Grid>
-        <Grid item xs={9}>
+        <Grid item xs={1} sm={6} md={9}>
           <Map />
         </Grid>
       </Grid>
