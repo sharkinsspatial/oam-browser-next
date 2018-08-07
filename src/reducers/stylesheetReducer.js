@@ -1,6 +1,7 @@
 import { Map, fromJS } from 'immutable';
 import bbox from '@turf/bbox';
 import geoViewport from '@mapbox/geo-viewport';
+import url from 'url';
 import * as actions from '../constants/action_types';
 import * as stylesheetConstants from '../constants/stylesheetConstants';
 
@@ -82,17 +83,8 @@ const filterItems = (state, payload) => {
   return clusterFilterState || filterState;
 };
 
-const setFilteredDataSource = (state, payload) => {
-  const { filteredItemsSource } = stylesheetConstants;
-  const filteredFeatures = payload.json.features.filter(
-    item => state.get('featureIds').find(id => id === item.properties.id)
-  );
-  const filteredFeatureCollection = {
-    type: 'FeatureCollection',
-    crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
-    features: filteredFeatures
-  };
-  const bounds = bbox(filteredFeatureCollection);
+const getViewport = (state, geoJSON) => {
+  const bounds = bbox(geoJSON);
   const clientSize = state.get('clientSize');
   const dimensions = [
     clientSize.get('clientWidth'),
@@ -106,13 +98,70 @@ const setFilteredDataSource = (state, payload) => {
     512,
     true
   );
+  return viewport;
+};
 
+const setFilteredDataSource = (state, payload) => {
+  const { filteredItemsSource } = stylesheetConstants;
+  const filteredFeatures = payload.json.features.filter(
+    item => state.get('featureIds').find(id => id === item.properties.id)
+  );
+  const filteredFeatureCollection = {
+    type: 'FeatureCollection',
+    crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
+    features: filteredFeatures
+  };
+  const viewport = getViewport(state, filteredFeatureCollection);
   const newState = state
     .setIn(['style', 'center'], fromJS(viewport.center))
     .setIn(['style', 'zoom'], viewport.zoom - 0.5)
     .setIn(['style', 'sources', filteredItemsSource, 'data'],
       fromJS(filteredFeatureCollection));
 
+  return newState;
+};
+
+const setActiveImageItem = (state, payload) => {
+  const { imageId } = payload;
+  const {
+    filteredItemsSource,
+    activeImageItemSource,
+    activeImageItem
+  } = stylesheetConstants;
+
+  const features = state
+    .getIn([
+      'style',
+      'sources',
+      filteredItemsSource,
+      'data',
+      'features']);
+  const idx = features
+    .findIndex(feature => feature.getIn(['properties', 'id']) === imageId);
+  const imageItem = features.get(idx);
+
+  const imageItemJS = imageItem.toJS();
+  const viewport = getViewport(state, imageItemJS);
+
+  const imagePath = url.parse(imageItemJS.properties.uuid)
+    .path.split('.')[0];
+
+  const tilePath = `https://tiles.openaerialmap.org${imagePath}`;
+
+  const activeImageItemLayer = {
+    id: activeImageItem,
+    type: 'raster',
+    source: activeImageItemSource
+  };
+
+  const newState = state
+    .setIn(['style', 'center'], fromJS(viewport.center))
+    .setIn(['style', 'zoom'], viewport.zoom - 0.5)
+    .setIn(['style', 'sources', activeImageItemSource, 'url'], tilePath)
+    .updateIn(
+      ['style', 'layers'],
+      layers => layers.insert(layers.size - 2, fromJS(activeImageItemLayer))
+    );
   return newState;
 };
 
@@ -138,6 +187,10 @@ export default function stylesheetReducer(state = initialState, action) {
       return state.merge({
         clientSize: fromJS(action.payload)
       });
+    }
+
+    case actions.SET_ACTIVE_IMAGE_ITEM: {
+      return setActiveImageItem(state, action.payload);
     }
 
     default: {

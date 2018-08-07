@@ -22,3 +22,10 @@ export function setClientSize(payload) {
     payload
   };
 }
+
+export function setActiveImageItem(payload) {
+  return {
+    type: types.SET_ACTIVE_IMAGE_ITEM,
+    payload
+  };
+}

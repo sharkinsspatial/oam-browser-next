@@ -22,7 +22,7 @@ const addLayers = (map) => {
     imageFootprints,
     filteredItemsSource,
     imagePointsSource,
-    imagePoints
+    imagePoints,
   } = stylesheetConstants;
 
   map.addLayer({
@@ -110,7 +110,8 @@ const addSources = (map) => {
   const {
     centroidSource,
     filteredItemsSource,
-    imagePointsSource
+    imagePointsSource,
+    activeImageItemSource
   } = stylesheetConstants;
 
   const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
@@ -134,6 +135,12 @@ const addSources = (map) => {
       crs: { type: 'name', properties: { name: 'urn:ogc:def:crs:OGC:1.3:CRS84' } },
       features: []
     }
+  });
+
+  map.addSource(activeImageItemSource, {
+    type: 'raster',
+    url: '',
+    tileSize: 256
   });
 };
 
