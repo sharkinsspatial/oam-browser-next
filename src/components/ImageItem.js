@@ -56,6 +56,7 @@ ImageItem.propTypes = {
   thumbUri: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   provider: PropTypes.string.isRequired,
+  push: PropTypes.func.isRequired,
   cols: PropTypes.number,
   classes: PropTypes.shape({
     title: PropTypes.string.isRequired,
