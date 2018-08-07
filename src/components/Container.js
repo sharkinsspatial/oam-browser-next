@@ -59,7 +59,9 @@ export const Container = (props) => {
             <Fragment forRoute="/imageitems/:imageId">
               <div />
             </Fragment>
-            <ImageItems />
+            <Fragment withConditions={location => location.route === '/'}>
+              <ImageItems />
+            </Fragment>
           </Grid>
           <Grid
             item

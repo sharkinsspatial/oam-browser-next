@@ -6,11 +6,16 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { push } from 'redux-little-router';
+import { setActiveImageItem } from '../actions/stylesheetActionCreators';
 import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import ImageItem from './ImageItem';
 
 const ImageItems = (props) => {
-  const { imageItems, push: dispatchPush } = props;
+  const {
+    imageItems,
+    push: dispatchPush,
+    setActiveImageItem: dispatchSetActiveImageItem
+  } = props;
   const items = imageItems.map((item) => {
     const id = item.getIn(['properties', 'id']);
     const thumbUri = item.getIn(['properties', 'thumb_uri']);
@@ -24,6 +29,7 @@ const ImageItems = (props) => {
         title={title}
         provider={provider}
         push={dispatchPush}
+        setActiveImageItem={dispatchSetActiveImageItem}
       />
     );
   });
@@ -44,13 +50,14 @@ const ImageItems = (props) => {
 
 ImageItems.propTypes = {
   imageItems: ImmutablePropTypes.list.isRequired,
-  push: PropTypes.func.isRequired
+  push: PropTypes.func.isRequired,
+  setActiveImageItem: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
   imageItems: stylesheetSelectors.getFilteredItems(state)
 });
 
-const mapDispatchToProps = { push };
+const mapDispatchToProps = { push, setActiveImageItem };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ImageItems);

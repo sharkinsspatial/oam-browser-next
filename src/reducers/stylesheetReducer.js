@@ -136,23 +136,16 @@ const setActiveImageItem = (state, payload) => {
       filteredItemsSource,
       'data',
       'features']);
-  const idx = features
-    .findIndex(feature => feature.getIn(['properties', 'id']) === imageId);
-  const imageItem = features.get(idx);
+
+  const imageItem = features
+    .find(feature => feature.getIn(['properties', 'id']) === imageId);
 
   const imageItemJS = imageItem.toJS();
   const viewport = getViewport(state, imageItemJS);
 
-  const imagePath = url.parse(imageItemJS.properties.uuid)
-    .path.split('.')[0];
+  const imagePath = url.parse(imageItemJS.properties.uuid).path.split('.')[0];
 
   const tilePath = `https://tiles.openaerialmap.org${imagePath}`;
-
-  const activeImageItemLayer = {
-    id: activeImageItem,
-    type: 'raster',
-    source: activeImageItemSource
-  };
 
   const newState = state
     .setIn(['style', 'center'], fromJS(viewport.center))
@@ -160,7 +153,11 @@ const setActiveImageItem = (state, payload) => {
     .setIn(['style', 'sources', activeImageItemSource, 'url'], tilePath)
     .updateIn(
       ['style', 'layers'],
-      layers => layers.insert(layers.size - 2, fromJS(activeImageItemLayer))
+      (layers) => {
+        const index = layers
+          .findIndex(layer => layer.get('id') === activeImageItem);
+        return layers.setIn([index, 'layout', 'visibility'], 'visible');
+      }
     );
   return newState;
 };

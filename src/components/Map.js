@@ -23,6 +23,8 @@ const addLayers = (map) => {
     filteredItemsSource,
     imagePointsSource,
     imagePoints,
+    activeImageItemSource,
+    activeImageItem
   } = stylesheetConstants;
 
   map.addLayer({
@@ -90,6 +92,15 @@ const addLayers = (map) => {
   });
 
   map.addLayer({
+    id: activeImageItem,
+    type: 'raster',
+    source: activeImageItemSource,
+    layout: {
+      visibility: 'none'
+    }
+  });
+
+  map.addLayer({
     id: imagePoints,
     type: 'circle',
     source: imagePointsSource,
@@ -139,7 +150,7 @@ const addSources = (map) => {
 
   map.addSource(activeImageItemSource, {
     type: 'raster',
-    url: '',
+    url: 'mapbox://mapbox.streets',
     tileSize: 256
   });
 };

@@ -8,6 +8,9 @@ import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
 
 const styles = () => ({
+  tile: {
+    cursor: 'pointer'
+  },
   title: {
     fontSize: '0.8rem'
   },
@@ -25,11 +28,18 @@ const ImageItem = ({
   title,
   provider,
   push,
+  setActiveImageItem,
   cols = 1,
   classes,
   ...other
 }) => (
-  <GridListTile key={id} cols={cols} {...other}>
+  <GridListTile
+    className={classes.tile}
+    key={id}
+    cols={cols}
+    {...other}
+    onClick={() => setActiveImageItem(id)}
+  >
     <img src={thumbUri} alt={title} />
     <GridListTileBar
       classes={{
@@ -57,6 +67,7 @@ ImageItem.propTypes = {
   title: PropTypes.string.isRequired,
   provider: PropTypes.string.isRequired,
   push: PropTypes.func.isRequired,
+  setActiveImageItem: PropTypes.func.isRequired,
   cols: PropTypes.number,
   classes: PropTypes.shape({
     title: PropTypes.string.isRequired,
