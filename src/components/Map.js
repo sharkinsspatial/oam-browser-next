@@ -237,37 +237,39 @@ const mapClickHandler = (e, filterItems) => {
 
 class Map extends Component {
   componentDidMount() {
-    const { setStyle, filterItems, setClientSize } = this.props;
-    mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhcmtpbnMiLCJhIjoiOFRmb0o1SSJ9.PMTjItrVcqcO8xBfgP1pMw';
-    const mapConfig = {
-      container: this.node,
-      style: 'mapbox://styles/mapbox/dark-v9',
-      center: [-103.59179687498357, 40.66995747013945],
-      zoom: 3,
-      attributionControl: false
-    };
-    const map = new mapboxgl.Map(mapConfig);
-    // map.addControl(new ReduxMapControl(map));
-    map.on('load', () => {
-      addSources(map);
-      addLayers(map);
-      configureCursor(map);
-      map.on('click', (e) => {
-        mapClickHandler(e, filterItems);
-      });
+    const { setStyle, filterItems, setClientSize, width } = this.props;
+    if (width !== 'xs') {
+      mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhcmtpbnMiLCJhIjoiOFRmb0o1SSJ9.PMTjItrVcqcO8xBfgP1pMw';
+      const mapConfig = {
+        container: this.node,
+        style: 'mapbox://styles/mapbox/dark-v9',
+        center: [-103.59179687498357, 40.66995747013945],
+        zoom: 3,
+        attributionControl: false
+      };
+      const map = new mapboxgl.Map(mapConfig);
+      // map.addControl(new ReduxMapControl(map));
+      map.on('load', () => {
+        addSources(map);
+        addLayers(map);
+        configureCursor(map);
+        map.on('click', (e) => {
+          mapClickHandler(e, filterItems);
+        });
 
-      map.on('resize', () => {
+        map.on('resize', () => {
+          const { clientHeight, clientWidth } = map.getCanvas();
+          setClientSize({ clientWidth, clientHeight });
+        });
+
+        const style = map.getStyle();
+        setStyle(style);
+
         const { clientHeight, clientWidth } = map.getCanvas();
         setClientSize({ clientWidth, clientHeight });
       });
-
-      const style = map.getStyle();
-      setStyle(style);
-
-      const { clientHeight, clientWidth } = map.getCanvas();
-      setClientSize({ clientWidth, clientHeight });
-    });
-    this.map = map;
+      this.map = map;
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -298,7 +300,7 @@ class Map extends Component {
       position: 'absolute',
       top: 65,
       bottom: 0,
-      width: '75%',
+      width: width === 'sm' ? '50%' : '75%',
       overflow: 'hidden'
     };
     if (width === 'xs') {

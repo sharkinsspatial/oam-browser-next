@@ -1,4 +1,4 @@
-import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { routerForBrowser, initializeCurrentLocation }
   from 'redux-little-router';
 import thunk from 'redux-thunk';
@@ -13,7 +13,8 @@ import filterMiddleware from './filterMiddleware';
 
 const {
   reducer: routerReducer,
-  middleware: routerMiddleware
+  middleware: routerMiddleware,
+  enhancer
 } = routerForBrowser({ routes });
 
 const initialState = {};
@@ -24,12 +25,15 @@ const store = createStore(
     reducer
   }),
   initialState,
-  applyMiddleware(
-    thunk,
-    routerMiddleware,
-    locationMiddleware,
-    apiMiddleware,
-    filterMiddleware
+  compose(
+    enhancer,
+    applyMiddleware(
+      thunk,
+      routerMiddleware,
+      locationMiddleware,
+      apiMiddleware,
+      filterMiddleware
+    )
   )
 );
 

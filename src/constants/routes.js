@@ -4,6 +4,9 @@ const routes = {
     '/login': {
       title: 'login'
     },
+    '/imageitems/:imageId': {
+      title: 'imageitemdetails'
+    }
   }
 };
 

@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import { Fragment } from 'redux-little-router';
 import LogoIcon from './LogoIcon';
 import Map from './Map';
 import ImageItems from './ImageItems';
@@ -30,24 +31,49 @@ const styles = theme => ({
 export const Container = (props) => {
   const { classes } = props;
   return (
-    <div className={classes.root}>
-      <AppBar position="static" color="default" className={classes.appBar}>
-        <Toolbar>
-          <LogoIcon className={classes.logoIcon} />
-          <Typography variant="title" color="inherit">
-            OpenAerialMap
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Grid container spacing={0}>
-        <Grid className={classes.sidebar} item xs={12} sm={6} md={3}>
-          <ImageItems />
+    <Fragment forRoute="/">
+      <div className={classes.root}>
+        <AppBar
+          position="static"
+          color="default"
+          className={classes.appBar}
+        >
+          <Toolbar>
+            <LogoIcon className={classes.logoIcon} />
+            <Typography
+              variant="title"
+              color="inherit"
+            >
+              OpenAerialMap
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Grid container spacing={0}>
+          <Grid
+            className={classes.sidebar}
+            item
+            xs={12}
+            sm={6}
+            md={3}
+          >
+            <Fragment withConditions={location => location.route === '/'}>
+              <ImageItems />
+            </Fragment>
+            <Fragment forRoute="/imageitems/:imageId">
+              <div />
+            </Fragment>
+          </Grid>
+          <Grid
+            item
+            xs={1}
+            sm={6}
+            md={9}
+          >
+            <Map />
+          </Grid>
         </Grid>
-        <Grid item xs={1} sm={6} md={9}>
-          <Map />
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Fragment>
   );
 };
 
