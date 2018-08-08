@@ -12,6 +12,7 @@ import * as stylesheetActionCreators
   from '../actions/stylesheetActionCreators';
 import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import * as stylesheetConstants from '../constants/stylesheetConstants';
+import MapLoadingProgress from './MapLoadingProgress';
 
 const addLayers = (map) => {
   const {
@@ -252,10 +253,20 @@ const mapClickHandler = (e, filterItems) => {
   }
 };
 
-
 class Map extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { loading: true };
+  }
+
   componentDidMount() {
-    const { setStyle, filterItems, setClientSize, width } = this.props;
+    const {
+      setStyle,
+      filterItems,
+      setClientSize,
+      width
+    } = this.props;
+
     if (width !== 'xs') {
       mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhcmtpbnMiLCJhIjoiOFRmb0o1SSJ9.PMTjItrVcqcO8xBfgP1pMw';
       const mapConfig = {
@@ -286,6 +297,15 @@ class Map extends Component {
         const { clientHeight, clientWidth } = map.getCanvas();
         setClientSize({ clientWidth, clientHeight });
       });
+
+      const onMapRender = (e) => {
+        if (e.target && e.target.loaded()) {
+          this.setState({ loading: false });
+        }
+      };
+
+      map.on('render', onMapRender);
+
       this.map = map;
     }
   }
@@ -293,9 +313,10 @@ class Map extends Component {
   componentWillReceiveProps(nextProps) {
     const { style } = this.props;
     const nextStyle = nextProps.style;
-    //if (!Immutable.is(style, nextStyle)) {
+    //  if (!Immutable.is(style, nextStyle)) {
     if (style !== nextStyle) {
       console.log('Style Change');
+      this.setState({ loading: true });
       const changes = diff(style.toJS(), nextStyle.toJS());
       changes.forEach((change) => {
         const { map } = this;
@@ -313,6 +334,7 @@ class Map extends Component {
 
   render() {
     const { width } = this.props;
+    const { loading } = this.state;
     let mapDiv;
     const style = {
       position: 'absolute',
@@ -324,7 +346,12 @@ class Map extends Component {
     if (width === 'xs') {
       mapDiv = <div />;
     } else {
-      mapDiv = <div id="map" style={style} ref={c => this.node = c} />;
+      mapDiv = (
+        <React.Fragment>
+          <div id="map" style={style} ref={c => this.node = c} />
+          <MapLoadingProgress loading={loading} />
+        </React.Fragment>
+      );
     }
     return mapDiv;
   }
