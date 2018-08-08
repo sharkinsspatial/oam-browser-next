@@ -2,6 +2,15 @@
   "name": "oam-browser-next",
   "version": "0.1.0",
   "private": true,
+  "author": {
+    "name": "Sean Harkins",
+    "url": "https://github.com/sharkinsspatial"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sharkinsspatial/oam-browser-next"
+  },
+  "license": "BSD-3-Clause",
   "dependencies": {
     "@mapbox/geo-viewport": "^0.4.0",
     "@mapbox/mapbox-gl-redux": "^0.1.0",
