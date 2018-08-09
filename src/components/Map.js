@@ -316,8 +316,10 @@ class Map extends Component {
     //  if (!Immutable.is(style, nextStyle)) {
     if (style !== nextStyle) {
       console.log('Style Change');
-      this.setState({ loading: true });
       const changes = diff(style.toJS(), nextStyle.toJS());
+      if (changes.length > 0) {
+        this.setState({ loading: true });
+      }
       changes.forEach((change) => {
         const { map } = this;
         if (change.command === 'setGeoJSONSourceData') {
