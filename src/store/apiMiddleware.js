@@ -5,7 +5,8 @@ import { CALL_API } from '../constants/action_types';
 
 
 //  const BASE_URL = process.env.REACT_APP_API_URL;
-const BASE_URL = process.env.PUBLIC_URL;
+//const BASE_URL = process.env.PUBLIC_URL;
+const BASE_URL = 'http://localhost:3000/';
 
 function callApi(endpoint, method, token, json) {
   const config = {
