@@ -58,27 +58,29 @@ const filterItems = (state, payload) => {
   } = buildFilters(payload.clusterIds, payload.featureIds);
 
   let clusterFilterState;
-  const filterState = state
-    .updateIn(['style', 'layers'], (list) => {
+  const filterState = state.withMutations((tempState) => {
+    tempState.updateIn(['style', 'layers'], (list) => {
       const idx = list.findIndex(layer => layer.get('id') === unclusteredPointLayer);
       return list.setIn([idx, 'filter'], fromJS(unclusteredPointFilter));
-    })
-    .updateIn(['style', 'layers'], (list) => {
+    });
+    tempState.updateIn(['style', 'layers'], (list) => {
       const idx = list.findIndex(layer => layer.get('id') === imagePoints);
       return list.setIn([idx, 'filter'], fromJS(imagePointsFilter));
-    })
-    .merge({ featureIds: fromJS(payload.featureIds) });
+    });
+    tempState.merge({ featureIds: fromJS(payload.featureIds) });
+  });
 
   if (clusterFilter) {
-    clusterFilterState = filterState
-      .updateIn(['style', 'layers'], (list) => {
+    clusterFilterState = filterState.withMutations((tempState) => {
+      tempState.updateIn(['style', 'layers'], (list) => {
         const idx = list.findIndex(layer => layer.get('id') === clusterLayer);
         return list.setIn([idx, 'filter'], fromJS(clusterFilter));
-      })
-      .updateIn(['style', 'layers'], (list) => {
+      });
+      tempState.updateIn(['style', 'layers'], (list) => {
         const idx = list.findIndex(layer => layer.get('id') === clusterCountLayer);
         return list.setIn([idx, 'filter'], fromJS(clusterFilter));
       });
+    });
   }
   return clusterFilterState || filterState;
 };
@@ -112,12 +114,12 @@ const setFilteredDataSource = (state, payload) => {
     features: filteredFeatures
   };
   const viewport = getViewport(state, filteredFeatureCollection);
-  const newState = state
-    .setIn(['style', 'center'], fromJS(viewport.center))
-    .setIn(['style', 'zoom'], viewport.zoom - 0.5)
-    .setIn(['style', 'sources', filteredItemsSource, 'data'],
+  const newState = state.withMutations((tempState) => {
+    tempState.setIn(['style', 'center'], fromJS(viewport.center));
+    tempState.setIn(['style', 'zoom'], viewport.zoom - 0.5);
+    tempState.setIn(['style', 'sources', filteredItemsSource, 'data'],
       fromJS(filteredFeatureCollection));
-
+  });
   return newState;
 };
 
@@ -147,11 +149,13 @@ const setActiveImageItem = (state, payload) => {
 
   const tilePath = `https://tiles.openaerialmap.org${imagePath}`;
 
-  const newState = state
-    .setIn(['style', 'center'], fromJS(viewport.center))
-    .setIn(['style', 'zoom'], viewport.zoom - 0.5)
-    .setIn(['style', 'sources', activeImageItemSource, 'url'], tilePath)
-    .updateIn(
+  const newState = state.withMutations((tempState) => {
+    tempState.setIn(['style', 'center'], fromJS(viewport.center));
+    tempState.setIn(['style', 'zoom'], viewport.zoom - 0.5);
+    tempState.setIn(
+      ['style', 'sources', activeImageItemSource, 'url'], tilePath
+    );
+    tempState.updateIn(
       ['style', 'layers'],
       (layers) => {
         const index = layers
@@ -159,6 +163,7 @@ const setActiveImageItem = (state, payload) => {
         return layers.setIn([index, 'layout', 'visibility'], 'visible');
       }
     );
+  });
   return newState;
 };
 
