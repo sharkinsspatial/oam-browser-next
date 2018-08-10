@@ -14,7 +14,8 @@ const ImageItems = (props) => {
   const {
     imageItems,
     push: dispatchPush,
-    setActiveImageItem: dispatchSetActiveImageItem
+    setActiveImageItem: dispatchSetActiveImageItem,
+    activeImageItemId
   } = props;
   const items = imageItems.map((item) => {
     const id = item.getIn(['properties', 'id']);
@@ -30,6 +31,7 @@ const ImageItems = (props) => {
         provider={provider}
         push={dispatchPush}
         setActiveImageItem={dispatchSetActiveImageItem}
+        activeImageItemId={activeImageItemId}
       />
     );
   });
@@ -51,11 +53,13 @@ const ImageItems = (props) => {
 ImageItems.propTypes = {
   imageItems: ImmutablePropTypes.list.isRequired,
   push: PropTypes.func.isRequired,
-  setActiveImageItem: PropTypes.func.isRequired
+  setActiveImageItem: PropTypes.func.isRequired,
+  activeImageItemId: PropTypes.string.isRequired
 };
 
 const mapStateToProps = state => ({
-  imageItems: stylesheetSelectors.getFilteredItems(state)
+  imageItems: stylesheetSelectors.getFilteredItems(state),
+  activeImageItemId: stylesheetSelectors.getActiveImageItemId(state)
 });
 
 const mapDispatchToProps = { push, setActiveImageItem };

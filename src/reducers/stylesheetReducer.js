@@ -150,6 +150,7 @@ const setActiveImageItem = (state, payload) => {
   const tilePath = `https://tiles.openaerialmap.org${imagePath}`;
 
   const newState = state.withMutations((tempState) => {
+    tempState.set('activeImageItemId', imageId);
     tempState.setIn(['style', 'center'], fromJS(viewport.center));
     tempState.setIn(['style', 'zoom'], viewport.zoom - 0.5);
     tempState.setIn(
@@ -167,7 +168,10 @@ const setActiveImageItem = (state, payload) => {
   return newState;
 };
 
-const initialState = Map({ style: fromJS({}) });
+const initialState = Map({
+  style: fromJS({}),
+  activeImageItemId: ''
+});
 
 export default function stylesheetReducer(state = initialState, action) {
   switch (action.type) {

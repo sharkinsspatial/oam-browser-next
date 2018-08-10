@@ -17,3 +17,9 @@ export const getFilteredItems = createSelector(
     return filteredItems || List();
   }
 );
+
+const getActiveImageState = state => state.stylesheet.get('activeImageItemId');
+export const getActiveImageItemId = createSelector(
+  [getActiveImageState],
+  activeImageItemId => activeImageItemId
+);

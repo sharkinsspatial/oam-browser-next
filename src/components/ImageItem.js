@@ -19,6 +19,10 @@ const styles = () => ({
   },
   icon: {
     color: 'rgba(255, 255, 255, 0.54)',
+  },
+  selected: {
+    cursor: 'pointer',
+    borderStyle: 'solid'
   }
 });
 
@@ -29,12 +33,13 @@ const ImageItem = ({
   provider,
   push,
   setActiveImageItem,
+  activeImageItemId,
   cols = 1,
   classes,
   ...other
 }) => (
   <GridListTile
-    className={classes.tile}
+    className={id === activeImageItemId ? classes.selected : classes.tile}
     key={id}
     cols={cols}
     {...other}
@@ -68,6 +73,7 @@ ImageItem.propTypes = {
   provider: PropTypes.string.isRequired,
   push: PropTypes.func.isRequired,
   setActiveImageItem: PropTypes.func.isRequired,
+  activeImageItemId: PropTypes.string.isRequired,
   cols: PropTypes.number,
   classes: PropTypes.shape({
     title: PropTypes.string.isRequired,
