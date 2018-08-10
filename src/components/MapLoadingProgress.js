@@ -7,7 +7,9 @@ const MapLoadingProgress = (props) => {
   let content;
   if (loading) {
     content = (
-      <div style={{ marginLeft: '50%', marginTop: '30%' }}>
+      <div
+        style={{ marginLeft: 'calc(50% - 40px)', marginTop: 'calc(100vh/2 - 65px)' }}
+      >
         <CircularProgress
           size={80}
           color="secondary"
