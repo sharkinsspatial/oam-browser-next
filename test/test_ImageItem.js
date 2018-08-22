@@ -9,7 +9,6 @@ import sinon from 'sinon';
 import ImageItem from '../src/components/ImageItem';
 
 configure({ adapter: new Adapter() });
-
 const getProps = () => ({
   id: 'id',
   thumbUri: '',
@@ -18,7 +17,7 @@ const getProps = () => ({
   push: () => {},
   setActiveImageItem: () => {},
   activeImageItemId: 'id',
-  cols: 0
+  cols: 0,
 });
 
 test('ImageItem', (t) => {
@@ -46,5 +45,30 @@ test('ImageItem', (t) => {
     .find(IconButton)
     .simulate('click');
   t.ok(pushStub.calledWith(expectedUrl), 'Calls push with correct url and id');
+  t.end();
+});
+
+test('ImageItem', (t) => {
+  const props = getProps();
+  const selected = 'selected';
+  props.classes = {
+    selected
+  };
+  const wrapper = shallow((<ImageItem {...props} />));
+  t.ok(wrapper.dive().hasClass(selected),
+    'ImageItem is selected when id matches activeImageItemId prop');
+  t.end();
+});
+
+test('ImageItem', (t) => {
+  const props = getProps();
+  const selected = 'selected';
+  props.classes = {
+    selected
+  };
+  props.id = '';
+  const wrapper = shallow((<ImageItem {...props} />));
+  t.notOk(wrapper.dive().hasClass(selected),
+    'ImageItem is not selected when id does not match activeImageItemId prop');
   t.end();
 });
