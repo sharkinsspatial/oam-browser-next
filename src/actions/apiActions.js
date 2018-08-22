@@ -6,11 +6,11 @@ export function fetchItems() {
     payload: {
       endpoint: 'itemCentroids.geojson',
       authenticated: false,
-      types: [
-        types.FETCH_ITEMS,
-        types.FETCH_ITEMS_SUCCEEDED,
-        types.FETCH_ITEMS_FAILED
-      ],
+      types: {
+        requestType: types.FETCH_ITEMS,
+        successType: types.FETCH_ITEMS_SUCCEEDED,
+        errorType: types.FETCH_ITEMS_FAILED
+      },
       method: 'GET'
     }
   };
@@ -22,11 +22,11 @@ export function fetchFilteredItems(itemIds) {
     payload: {
       endpoint: 'items.geojson',
       authenticated: false,
-      types: [
-        types.FETCH_FILTERED_ITEMS,
-        types.FETCH_FILTERED_ITEMS_SUCCEEDED,
-        types.FETCH_FILTERED_ITEMS_FAILED
-      ],
+      types: {
+        requestType: types.FETCH_FILTERED_ITEMS,
+        successType: types.FETCH_FILTERED_ITEMS_SUCCEEDED,
+        errorType: types.FETCH_FILTERED_ITEMS_FAILED
+      },
       method: 'GET'
     }
   };

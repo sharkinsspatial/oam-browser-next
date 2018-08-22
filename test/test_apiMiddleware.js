@@ -9,7 +9,11 @@ const testAction = {
   payload: {
     endpoint: '',
     authenticated: true,
-    types: ['FETCH', 'FETCH_SUCCEEDED', 'FETCH_FAILED'],
+    types: {
+      requestType: 'FETCH',
+      successType: 'FETCH_SUCCEEDED',
+      errorType: 'FETCH_FAILED'
+    },
     method: 'GET'
   }
 };
@@ -85,7 +89,7 @@ test('apiMiddleware', (t) => {
     );
     t.equal(
       nextSpy.firstCall.args[0].type,
-      testAction.payload.types[1],
+      testAction.payload.types.successType,
       'Calls next function with success action type when succesfull'
     );
     t.end();
@@ -108,7 +112,7 @@ test('apiMiddleware', (t) => {
   apiMiddleware(store)(nextSpy)(testAction);
   callApiStub().then().catch(() => {
     t.equal(nextSpy.firstCall.args[0].error, reject.message);
-    t.equal(nextSpy.firstCall.args[0].type, testAction.payload.types[2]);
+    t.equal(nextSpy.firstCall.args[0].type, testAction.payload.types.errorType);
     t.end();
   });
 });

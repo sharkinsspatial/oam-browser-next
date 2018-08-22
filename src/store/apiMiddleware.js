@@ -45,7 +45,7 @@ const apiMiddleware = store => next => (action) => {
     json
   } = action.payload;
 
-  const [requestType, successType, errorType] = types;
+  const { requestType, successType, errorType } = types;
 
   const handleResponse = (response) => {
     const responseJSON = JSON.parse(response);
