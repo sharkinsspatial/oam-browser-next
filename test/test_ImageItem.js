@@ -18,14 +18,7 @@ const getProps = () => ({
   push: () => {},
   setActiveImageItem: () => {},
   activeImageItemId: 'id',
-  cols: 0,
-  classes: {
-    tile: '',
-    title: '',
-    subtitle: '',
-    icon: '',
-    selected: ''
-  }
+  cols: 0
 });
 
 test('ImageItem', (t) => {
