@@ -1,4 +1,4 @@
-/* eslint no-underscore-dangle: "off", prefer-destructuring: "off" */
+/* eslint prefer-destructuring: "off" */
 import React from 'react';
 import Adapter from 'enzyme-adapter-react-16';
 import test from 'tape';

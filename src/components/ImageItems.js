@@ -10,7 +10,7 @@ import { setActiveImageItem } from '../actions/stylesheetActionCreators';
 import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import ImageItem from './ImageItem';
 
-const ImageItems = (props) => {
+export const ImageItems = (props) => {
   const {
     imageItems,
     push: dispatchPush,
