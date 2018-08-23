@@ -8,3 +8,4 @@ require('./test_Container');
 require('./test_stylesheetSelectors');
 require('./test_ImageItems');
 require('./test_ImageItem');
+require('./test_stylesheetReducer');
