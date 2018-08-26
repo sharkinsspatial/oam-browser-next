@@ -8,3 +8,5 @@ export const imagePointsSource = 'imagePointsSource';
 export const filteredItemsSource = 'filteredItemsSource';
 export const activeImageItemSource = 'activeImageItemSource';
 export const activeImageItem = 'activeImageItem';
+export const activeImageFootprint = 'activeImageFootprint';
+export const activeImagePoint = 'activeImagePoint';

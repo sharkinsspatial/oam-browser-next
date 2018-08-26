@@ -25,7 +25,8 @@ const addLayers = (map) => {
     imagePointsSource,
     imagePoints,
     activeImageItemSource,
-    activeImageItem
+    activeImageItem,
+    activeImagePoint
   } = stylesheetConstants;
 
   map.addLayer({
@@ -84,11 +85,12 @@ const addLayers = (map) => {
     source: filteredItemsSource,
     layout: {},
     paint: {
-      'fill-color': '#088',
-      'fill-opacity': ['interpolate', ['linear'], ['get', 'gsd'],
-        0, 0.5,
-        100, 0.1
-      ]
+      'fill-opacity': ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        0.6,
+        0.2
+      ],
+      'fill-color': '#088'
     }
   });
 
@@ -107,11 +109,25 @@ const addLayers = (map) => {
     source: imagePointsSource,
     filter: ['==', ['get', 'id'], 0],
     paint: {
-      'circle-color': '#ff3333',
-      'circle-radius': ['interpolate', ['linear'], ['zoom'],
-        5, 3,
-        10, 4
+      'circle-color': '#088',
+      'circle-radius': ['case',
+        ['boolean', ['feature-state', 'hover'], false],
+        8,
+        3.5
       ],
+      'circle-stroke-width': 1,
+      'circle-stroke-color': '#fff'
+    }
+  });
+
+  map.addLayer({
+    id: activeImagePoint,
+    type: 'circle',
+    source: imagePointsSource,
+    filter: ['==', ['get', 'id'], 0],
+    paint: {
+      'circle-color': '#ff3333',
+      'circle-radius': 8,
       'circle-stroke-width': 1,
       'circle-stroke-color': '#fff'
     }
@@ -157,7 +173,12 @@ const addSources = (map) => {
 };
 
 const configureCursor = (map) => {
-  const { clusterLayer, unclusteredPointLayer } = stylesheetConstants;
+  const {
+    clusterLayer,
+    unclusteredPointLayer,
+    imageFootprints
+  } = stylesheetConstants;
+
   map.on('mouseenter', clusterLayer, (e) => {
     const { point_count } = e.features[0].properties;
     if (point_count < 50) {
@@ -174,6 +195,14 @@ const configureCursor = (map) => {
   });
 
   map.on('mouseleave', unclusteredPointLayer, () => {
+    map.getCanvas().style.cursor = '';
+  });
+
+  map.on('mouseenter', imageFootprints, () => {
+    map.getCanvas().style.cursor = 'pointer';
+  });
+
+  map.on('mouseleave', imageFootprints, () => {
     map.getCanvas().style.cursor = '';
   });
 };
@@ -224,18 +253,20 @@ const onClusterClick = (clusterId, centroidSource, filterItems) => {
   });
 };
 
-const mapClickHandler = (e, filterItems) => {
+const mapClickHandler = (e, filterItems, setActiveImageItem) => {
   const map = e.target;
   const {
     clusterLayer,
     unclusteredPointLayer,
+    imageFootprints,
+    imagePoints,
     centroidSource
   } = stylesheetConstants;
 
   const queryFeatures = map.queryRenderedFeatures(
     e.point,
     {
-      layers: [clusterLayer, unclusteredPointLayer]
+      layers: [clusterLayer, unclusteredPointLayer, imageFootprints, imagePoints]
     }
   );
   if (queryFeatures.length > 0) {
@@ -250,6 +281,14 @@ const mapClickHandler = (e, filterItems) => {
       const { id } = queryFeatures[0].properties;
       filterItems({ clusterIds: [], featureIds: [id] });
     }
+    if (queryFeatures[0].layer.id === imageFootprints) {
+      const { id } = queryFeatures[0].properties;
+      setActiveImageItem(id);
+    }
+    if (queryFeatures[0].layer.id === imagePoints) {
+      const { id } = queryFeatures[0].properties;
+      setActiveImageItem(id);
+    }
   }
 };
 
@@ -259,10 +298,58 @@ class Map extends Component {
     this.state = { loading: true };
   }
 
+  hoverHandler(e) {
+    if (e.features.length > 0) {
+      const { filteredItemsSource, imagePointsSource } = stylesheetConstants;
+      const map = e.target;
+      if (this.hoverId) {
+        map.setFeatureState({
+          source: filteredItemsSource,
+          id: this.hoverId
+        },
+        { hover: false });
+        map.setFeatureState({
+          source: imagePointsSource,
+          id: this.hoverId
+        },
+        { hover: false });
+      }
+      this.hoverId = e.features[0].id;
+      map.setFeatureState({
+        source: filteredItemsSource,
+        id: this.hoverId
+      },
+      { hover: true });
+      map.setFeatureState({
+        source: imagePointsSource,
+        id: this.hoverId
+      },
+      { hover: true });
+    }
+  }
+
+  offHoverHandler(e) {
+    const { filteredItemsSource, imagePointsSource } = stylesheetConstants;
+    const map = e.target;
+    if (this.hoverId) {
+      map.setFeatureState({
+        source: filteredItemsSource,
+        id: this.hoverId
+      },
+      { hover: false });
+      map.setFeatureState({
+        source: imagePointsSource,
+        id: this.hoverId
+      },
+      { hover: false });
+    }
+  }
+
   componentDidMount() {
     const {
       setStyle,
       filterItems,
+      setActiveImageItem,
       setClientSize,
       width
     } = this.props;
@@ -276,15 +363,25 @@ class Map extends Component {
         zoom: 3,
         attributionControl: false
       };
+      this.hoverId = null;
       const map = new mapboxgl.Map(mapConfig);
-      // map.addControl(new ReduxMapControl(map));
       map.on('load', () => {
         addSources(map);
         addLayers(map);
         configureCursor(map);
         map.on('click', (e) => {
-          mapClickHandler(e, filterItems);
+          mapClickHandler(e, filterItems, setActiveImageItem);
         });
+
+        const { imageFootprints, imagePoints } = stylesheetConstants;
+        map.on('mousemove', imageFootprints,
+          this.hoverHandler);
+        map.on('mouseleave', imageFootprints,
+          this.offHoverHandler);
+        map.on('mousemove', imagePoints,
+          this.hoverHandler);
+        map.on('mouseleave', imagePoints,
+          this.offHoverHandler);
 
         map.on('resize', () => {
           const { clientHeight, clientWidth } = map.getCanvas();
@@ -292,6 +389,7 @@ class Map extends Component {
         });
 
         const style = map.getStyle();
+        console.log(style);
         setStyle(style);
 
         const { clientHeight, clientWidth } = map.getCanvas();
@@ -363,6 +461,7 @@ Map.propTypes = {
   style: ImmutablePropTypes.map.isRequired,
   setStyle: PropTypes.func.isRequired,
   filterItems: PropTypes.func.isRequired,
+  setActiveImageItem: PropTypes.func.isRequired,
   setClientSize: PropTypes.func.isRequired,
   width: PropTypes.string.isRequired
 };

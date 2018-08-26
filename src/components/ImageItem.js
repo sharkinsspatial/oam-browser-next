@@ -22,7 +22,8 @@ const styles = () => ({
   },
   selected: {
     cursor: 'pointer',
-    borderStyle: 'solid'
+    borderStyle: 'solid',
+    borderColor: '#ff3333'
   }
 });
 

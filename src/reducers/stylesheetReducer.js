@@ -128,7 +128,8 @@ const setActiveImageItem = (state, payload) => {
   const {
     filteredItemsSource,
     activeImageItemSource,
-    activeImageItem
+    activeImageItem,
+    activeImagePoint
   } = stylesheetConstants;
 
   const features = state
@@ -162,6 +163,14 @@ const setActiveImageItem = (state, payload) => {
         const index = layers
           .findIndex(layer => layer.get('id') === activeImageItem);
         return layers.setIn([index, 'layout', 'visibility'], 'visible');
+      }
+    );
+    tempState.updateIn(
+      ['style', 'layers'],
+      (layers) => {
+        const index = layers
+          .findIndex(layer => layer.get('id') === activeImagePoint);
+        return layers.setIn([index, 'filter', 2], imageId);
       }
     );
   });
