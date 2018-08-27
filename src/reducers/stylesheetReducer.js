@@ -123,6 +123,34 @@ const setFilteredDataSource = (state, payload) => {
   return newState;
 };
 
+const unSetActiveImageItem = (state) => {
+  const {
+    activeImageItem,
+    activeImagePoint
+  } = stylesheetConstants;
+
+  const newState = state.withMutations((tempState) => {
+    tempState.set('activeImageItemId', '');
+    tempState.updateIn(
+      ['style', 'layers'],
+      (layers) => {
+        const index = layers
+          .findIndex(layer => layer.get('id') === activeImageItem);
+        return layers.setIn([index, 'layout', 'visibility'], 'none');
+      }
+    );
+    tempState.updateIn(
+      ['style', 'layers'],
+      (layers) => {
+        const index = layers
+          .findIndex(layer => layer.get('id') === activeImagePoint);
+        return layers.setIn([index, 'filter', 2], 0);
+      }
+    );
+  });
+  return newState;
+};
+
 const setActiveImageItem = (state, payload) => {
   const { imageId } = payload;
   const {
@@ -191,7 +219,7 @@ export default function stylesheetReducer(state = initialState, action) {
     }
 
     case actions.FILTER_ITEMS: {
-      return filterItems(state, action.payload);
+      return unSetActiveImageItem(filterItems(state, action.payload));
     }
 
     case actions.FETCH_FILTERED_ITEMS_SUCCEEDED: {
