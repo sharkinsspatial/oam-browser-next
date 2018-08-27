@@ -112,8 +112,8 @@ const addLayers = (map) => {
       'circle-color': '#088',
       'circle-radius': ['case',
         ['boolean', ['feature-state', 'hover'], false],
-        8,
-        3.5
+        9,
+        5
       ],
       'circle-stroke-width': 1,
       'circle-stroke-color': '#fff'
@@ -176,7 +176,7 @@ const configureCursor = (map) => {
   const {
     clusterLayer,
     unclusteredPointLayer,
-    imageFootprints
+    imagePoints
   } = stylesheetConstants;
 
   map.on('mouseenter', clusterLayer, (e) => {
@@ -198,11 +198,11 @@ const configureCursor = (map) => {
     map.getCanvas().style.cursor = '';
   });
 
-  map.on('mouseenter', imageFootprints, () => {
+  map.on('mouseenter', imagePoints, () => {
     map.getCanvas().style.cursor = 'pointer';
   });
 
-  map.on('mouseleave', imageFootprints, () => {
+  map.on('mouseleave', imagePoints, () => {
     map.getCanvas().style.cursor = '';
   });
 };
@@ -258,7 +258,6 @@ const mapClickHandler = (e, filterItems, setActiveImageItem) => {
   const {
     clusterLayer,
     unclusteredPointLayer,
-    imageFootprints,
     imagePoints,
     centroidSource
   } = stylesheetConstants;
@@ -266,25 +265,23 @@ const mapClickHandler = (e, filterItems, setActiveImageItem) => {
   const queryFeatures = map.queryRenderedFeatures(
     e.point,
     {
-      layers: [clusterLayer, unclusteredPointLayer, imageFootprints, imagePoints]
+      layers: [clusterLayer, unclusteredPointLayer, imagePoints]
     }
   );
   if (queryFeatures.length > 0) {
-    if (queryFeatures[0].layer.id === clusterLayer) {
-      const { cluster_id, point_count } = queryFeatures[0].properties;
-      if (point_count < 50) {
-        const mapCentroidSource = map.getSource(centroidSource);
-        onClusterClick(cluster_id, mapCentroidSource, filterItems);
+    queryFeatures.forEach((feature) => {
+      if (feature.layer.id === clusterLayer) {
+        const { cluster_id, point_count } = feature.properties;
+        if (point_count < 50) {
+          const mapCentroidSource = map.getSource(centroidSource);
+          onClusterClick(cluster_id, mapCentroidSource, filterItems);
+        }
       }
-    }
-    if (queryFeatures[0].layer.id === unclusteredPointLayer) {
-      const { id } = queryFeatures[0].properties;
-      filterItems({ clusterIds: [], featureIds: [id] });
-    }
-    if (queryFeatures[0].layer.id === imageFootprints) {
-      const { id } = queryFeatures[0].properties;
-      setActiveImageItem(id);
-    }
+      if (feature.layer.id === unclusteredPointLayer) {
+        const { id } = feature.properties;
+        filterItems({ clusterIds: [], featureIds: [id] });
+      }
+    });
     if (queryFeatures[0].layer.id === imagePoints) {
       const { id } = queryFeatures[0].properties;
       setActiveImageItem(id);
@@ -373,11 +370,7 @@ class Map extends Component {
           mapClickHandler(e, filterItems, setActiveImageItem);
         });
 
-        const { imageFootprints, imagePoints } = stylesheetConstants;
-        map.on('mousemove', imageFootprints,
-          this.hoverHandler);
-        map.on('mouseleave', imageFootprints,
-          this.offHoverHandler);
+        const { imagePoints } = stylesheetConstants;
         map.on('mousemove', imagePoints,
           this.hoverHandler);
         map.on('mouseleave', imagePoints,
