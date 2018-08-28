@@ -1,11 +1,14 @@
-/* eslint react/require-default-props: 0 */
+/* eslint react/require-default-props: 0, react/no-find-dom-node: 0 */
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import GridListTile from '@material-ui/core/GridListTile';
 import GridListTileBar from '@material-ui/core/GridListTileBar';
 import IconButton from '@material-ui/core/IconButton';
 import InfoIcon from '@material-ui/icons/Info';
+import scrollIntoView from 'scroll-into-view-if-needed';
+
 
 const styles = () => ({
   tile: {
@@ -23,49 +26,73 @@ const styles = () => ({
   selected: {
     cursor: 'pointer',
     borderStyle: 'solid',
-    borderColor: '#ff3333'
+    borderColor: '#ff3333',
+    borderWidth: '5px'
   }
 });
 
-const ImageItem = ({
-  id,
-  thumbUri,
-  title,
-  provider,
-  push,
-  setActiveImageItem,
-  activeImageItemId,
-  cols = 1,
-  classes,
-  ...other
-}) => (
-  <GridListTile
-    className={id === activeImageItemId ? classes.selected : classes.tile}
-    key={id}
-    cols={cols}
-    {...other}
-    onClick={() => setActiveImageItem(id)}
-  >
-    <img src={thumbUri} alt={title} />
-    <GridListTileBar
-      classes={{
-        title: classes.title,
-        subtitle: classes.subtitle
-      }}
-      title={title}
-      subtitle={provider}
-      actionIcon={(
-        <IconButton
-          key={id}
-          className={classes.icon}
-          onClick={() => push(`/imageitems/${id}`)}
-        >
-          <InfoIcon />
-        </IconButton>
-      )}
-    />
-  </GridListTile>
-);
+class ImageItem extends React.Component {
+  constructor(props) {
+    super(props);
+    this.compRef = React.createRef();
+  }
+
+  componentDidUpdate() {
+    const { id, activeImageItemId } = this.props;
+    if (id === activeImageItemId) {
+      const compNode = ReactDOM.findDOMNode(this.compRef.current);
+      scrollIntoView(compNode, {
+        behavior: 'smooth',
+        scrollMode: 'if-needed'
+      });
+    }
+  }
+
+  render() {
+    const {
+      id,
+      thumbUri,
+      title,
+      provider,
+      push,
+      setActiveImageItem,
+      activeImageItemId,
+      cols = 1,
+      classes,
+      ...other
+    } = this.props;
+
+    return (
+      <GridListTile
+        className={id === activeImageItemId ? classes.selected : classes.tile}
+        key={id}
+        cols={cols}
+        {...other}
+        onClick={() => setActiveImageItem(id)}
+        ref={this.compRef}
+      >
+        <img src={thumbUri} alt={title} />
+        <GridListTileBar
+          classes={{
+            title: classes.title,
+            subtitle: classes.subtitle
+          }}
+          title={title}
+          subtitle={provider}
+          actionIcon={(
+            <IconButton
+              key={id}
+              className={classes.icon}
+              onClick={() => push(`/imageitems/${id}`)}
+            >
+              <InfoIcon />
+            </IconButton>
+          )}
+        />
+      </GridListTile>
+    );
+  }
+}
 
 ImageItem.propTypes = {
   id: PropTypes.string.isRequired,
