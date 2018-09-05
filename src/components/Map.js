@@ -382,7 +382,6 @@ class Map extends Component {
         });
 
         const style = map.getStyle();
-        console.log(style);
         setStyle(style);
 
         const { clientHeight, clientWidth } = map.getCanvas();
@@ -433,7 +432,7 @@ class Map extends Component {
       position: 'absolute',
       top: 65,
       bottom: 0,
-      width: width === 'sm' ? '50%' : '75%',
+      width: width === 'sm' ? '50%' : '71%',
       overflow: 'hidden'
     };
     if (width === 'xs') {

@@ -54,7 +54,7 @@ export const Container = (props) => {
             item
             xs={12}
             sm={6}
-            md={3}
+            md={4}
           >
             <Fragment forRoute="/imageitems/:imageId">
               <div />
@@ -67,7 +67,7 @@ export const Container = (props) => {
             item
             xs={1}
             sm={6}
-            md={9}
+            md={8}
           >
             <Map />
           </Grid>
