@@ -12,7 +12,8 @@ function callApi(endpoint, method, token, json) {
   const config = {
     method,
     Accept: 'application/json',
-    'Content-Type': 'application/json',
+    headers: { 'content-type': 'application/json' },
+    mode: 'cors',
     body: JSON.stringify(json)
   };
 

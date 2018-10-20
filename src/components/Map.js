@@ -142,7 +142,8 @@ const addSources = (map) => {
     activeImageItemSource
   } = stylesheetConstants;
 
-  const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
+  //const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
+  const centroidData = 'http://localhost:3000/centroids';
   map.addSource(centroidSource, {
     type: 'geojson',
     data: centroidData,
@@ -432,7 +433,7 @@ class Map extends Component {
       position: 'absolute',
       top: 65,
       bottom: 0,
-      width: width === 'sm' ? '50%' : '71%',
+      width: width === 'sm' ? '50%' : '66.666%',
       overflow: 'hidden'
     };
     if (width === 'xs') {
@@ -448,7 +449,6 @@ class Map extends Component {
     return mapDiv;
   }
 }
-
 Map.propTypes = {
   style: ImmutablePropTypes.map.isRequired,
   setStyle: PropTypes.func.isRequired,

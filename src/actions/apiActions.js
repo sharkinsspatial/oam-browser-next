@@ -4,7 +4,7 @@ export function fetchItems() {
   return {
     type: types.CALL_API,
     payload: {
-      endpoint: 'itemCentroids.geojson',
+      endpoint: 'centroids',
       authenticated: false,
       types: {
         requestType: types.FETCH_ITEMS,
@@ -20,14 +20,15 @@ export function fetchFilteredItems(itemIds) {
   return {
     type: types.CALL_API,
     payload: {
-      endpoint: 'items.geojson',
+      endpoint: 'filteredItems',
       authenticated: false,
       types: {
         requestType: types.FETCH_FILTERED_ITEMS,
         successType: types.FETCH_FILTERED_ITEMS_SUCCEEDED,
         errorType: types.FETCH_FILTERED_ITEMS_FAILED
       },
-      method: 'GET'
+      method: 'POST',
+      json: itemIds
     }
   };
 }

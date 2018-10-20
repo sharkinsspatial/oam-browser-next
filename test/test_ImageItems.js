@@ -12,7 +12,7 @@ const getProps = () => ({
   imageItems: List(),
   push: () => {},
   setActiveImageItem: () => {},
-  activeImageItemId: 'id'
+  activeImageItemId: 0
 });
 
 test('ImageItems', (t) => {

@@ -10,13 +10,13 @@ import ImageItem from '../src/components/ImageItem';
 
 configure({ adapter: new Adapter() });
 const getProps = () => ({
-  id: 'id',
-  thumbUri: '',
+  id: 0,
+  thumbnail: '',
   title: '',
   provider: '',
   push: () => {},
   setActiveImageItem: () => {},
-  activeImageItemId: 'id',
+  activeImageItemId: 0,
   cols: 0,
 });
 
@@ -66,7 +66,7 @@ test('ImageItem', (t) => {
   props.classes = {
     selected
   };
-  props.id = '';
+  props.id = 1;
   const wrapper = shallow((<ImageItem {...props} />));
   t.notOk(wrapper.dive().hasClass(selected),
     'ImageItem is not selected when id does not match activeImageItemId prop');

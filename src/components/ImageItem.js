@@ -51,7 +51,7 @@ class ImageItem extends React.Component {
   render() {
     const {
       id,
-      thumbUri,
+      thumbnail,
       title,
       provider,
       push,
@@ -71,7 +71,7 @@ class ImageItem extends React.Component {
         onClick={() => setActiveImageItem(id)}
         ref={this.compRef}
       >
-        <img src={thumbUri} alt={title} />
+        <img src={thumbnail} alt={title} />
         <GridListTileBar
           classes={{
             title: classes.title,
@@ -95,13 +95,13 @@ class ImageItem extends React.Component {
 }
 
 ImageItem.propTypes = {
-  id: PropTypes.string.isRequired,
-  thumbUri: PropTypes.string.isRequired,
+  id: PropTypes.number.isRequired,
+  thumbnail: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   provider: PropTypes.string.isRequired,
   push: PropTypes.func.isRequired,
   setActiveImageItem: PropTypes.func.isRequired,
-  activeImageItemId: PropTypes.string.isRequired,
+  activeImageItemId: PropTypes.number.isRequired,
   cols: PropTypes.number,
   classes: PropTypes.shape({
     title: PropTypes.string.isRequired,

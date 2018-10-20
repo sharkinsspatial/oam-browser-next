@@ -25,7 +25,7 @@ const buildFilters = (clusterIds, featureIds) => {
       ['has', 'point_count']
     ],
     ['match',
-      ['to-string', ['get', 'id']],
+      ['get', 'id'],
       featureIds,
       false,
       true
@@ -130,7 +130,7 @@ const unSetActiveImageItem = (state) => {
   } = stylesheetConstants;
 
   const newState = state.withMutations((tempState) => {
-    tempState.set('activeImageItemId', '');
+    tempState.set('activeImageItemId', 0);
     tempState.updateIn(
       ['style', 'layers'],
       (layers) => {
@@ -174,7 +174,7 @@ const setActiveImageItem = (state, payload) => {
   const imageItemJS = imageItem.toJS();
   const viewport = getViewport(state, imageItemJS);
 
-  const imagePath = url.parse(imageItemJS.properties.uuid).path.split('.')[0];
+  const imagePath = url.parse(imageItemJS.properties.href).path.split('.')[0];
 
   const tilePath = `https://tiles.openaerialmap.org${imagePath}`;
 
@@ -207,7 +207,7 @@ const setActiveImageItem = (state, payload) => {
 
 const initialState = Map({
   style: fromJS({}),
-  activeImageItemId: ''
+  activeImageItemId: 0
 });
 
 export default function stylesheetReducer(state = initialState, action) {

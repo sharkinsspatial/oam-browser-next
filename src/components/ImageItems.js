@@ -19,14 +19,14 @@ export const ImageItems = (props) => {
   } = props;
   const items = imageItems.map((item) => {
     const id = item.getIn(['properties', 'id']);
-    const thumbUri = item.getIn(['properties', 'thumb_uri']);
+    const thumbnail = item.getIn(['properties', 'thumbnail']);
     const title = item.getIn(['properties', 'title']);
     const provider = item.getIn(['properties', 'provider']);
     return (
       <ImageItem
         key={id}
         id={id}
-        thumbUri={thumbUri}
+        thumbnail={thumbnail}
         title={title}
         provider={provider}
         push={dispatchPush}
@@ -54,7 +54,7 @@ ImageItems.propTypes = {
   imageItems: ImmutablePropTypes.list.isRequired,
   push: PropTypes.func.isRequired,
   setActiveImageItem: PropTypes.func.isRequired,
-  activeImageItemId: PropTypes.string.isRequired
+  activeImageItemId: PropTypes.number.isRequired
 };
 
 const mapStateToProps = state => ({
