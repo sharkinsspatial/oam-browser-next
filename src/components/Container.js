@@ -6,6 +6,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { Fragment } from 'redux-little-router';
+import Login from './Login';
 import LogoIcon from './LogoIcon';
 import Map from './Map';
 import ImageItems from './ImageItems';
@@ -25,6 +26,10 @@ const styles = theme => ({
   sidebar: {
     padding: theme.spacing.unit,
     color: theme.palette.text.secondary,
+  },
+  rightToolbar: {
+    marginLeft: 'auto',
+    marginRight: -12,
   }
 });
 
@@ -46,6 +51,13 @@ export const Container = (props) => {
             >
               OpenAerialMap
             </Typography>
+            <div
+              className={classes.rightToolbar}
+            >
+              <Login>
+                Login
+              </Login>
+            </div>
           </Toolbar>
         </AppBar>
         <Grid container spacing={0}>
