@@ -142,8 +142,8 @@ const addSources = (map) => {
     activeImageItemSource
   } = stylesheetConstants;
 
-  //const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
-  const centroidData = 'http://localhost:3000/centroids';
+  // const centroidData = `${process.env.PUBLIC_URL}/itemCentroids.geojson`;
+  const centroidData = `${process.env.REACT_APP_API_URL}/centroids`;
   map.addSource(centroidSource, {
     type: 'geojson',
     data: centroidData,
