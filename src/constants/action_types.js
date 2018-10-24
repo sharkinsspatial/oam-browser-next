@@ -1,4 +1,4 @@
-export const TOKEN_EXPIRED = 'TOKEN_EXPIRED';
+export const SET_HAS_VALID_TOKEN = 'SET_HAS_VALID_TOKEN';
 export const CALL_API = 'CALL_API';
 export const FETCH_ITEMS = 'FETCH_ITEMS';
 export const FETCH_ITEMS_SUCCEEDED = 'FETCH_ITEMS_SUCCEEDED';

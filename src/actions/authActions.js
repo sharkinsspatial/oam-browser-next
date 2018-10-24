@@ -1,7 +1,10 @@
-import { TOKEN_EXPIRED } from '../constants/action_types';
+import { SET_HAS_VALID_TOKEN } from '../constants/action_types';
 
-export function tokenExpired() {
+export function setHasValidToken(hasValidToken) {
   return {
-    type: TOKEN_EXPIRED
+    type: SET_HAS_VALID_TOKEN,
+    payload: {
+      hasValidToken
+    }
   };
-};
+}

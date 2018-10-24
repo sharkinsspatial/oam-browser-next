@@ -1,7 +1,7 @@
-/* global window localStorage */
+/* global localStorage */
 import jwt from 'jsonwebtoken';
 
-const key = 'admin_token';
+const key = process.env.REACT_APP_ACCESS_TOKEN_KEY;
 
 const tokenIsVaild = (token) => {
   const currentTime = new Date().getTime() / 1000;

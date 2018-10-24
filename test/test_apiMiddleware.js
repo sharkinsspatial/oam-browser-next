@@ -50,12 +50,17 @@ test('apiMiddleware', (t) => {
 
 test('apiMiddleware', (t) => {
   const { store, dispatch, nextSpy } = setup();
-  const tokenExpiredAction = { type: 'TOKEN_EXPIRED' };
+  const setHasValidTokenAction = {
+    type: 'SET_HAS_VALID_TOKEN',
+    payload: {
+      hasValidToken: false
+    }
+  };
   const getTokenStub = sinon.stub().returns(null);
   apiMiddleware.__Rewire__('getToken', getTokenStub);
   apiMiddleware(store)(nextSpy)(testAction);
   t.ok(
-    dispatch.withArgs(tokenExpiredAction).calledOnce,
+    dispatch.withArgs(setHasValidTokenAction).calledOnce,
     'Creates tokenExpiredAction when token is null'
   );
   t.end();

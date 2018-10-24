@@ -1,6 +1,6 @@
 /* global fetch */
 import { getToken } from '../utils/tokens';
-import { tokenExpired } from '../actions/authActions';
+import { setHasValidToken } from '../actions/authActions';
 import { CALL_API } from '../constants/action_types';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -66,7 +66,7 @@ const apiMiddleware = store => next => (action) => {
   if (authenticated) {
     const token = getToken();
     if (!token) {
-      store.dispatch(tokenExpired());
+      store.dispatch(setHasValidToken(false));
     } else {
       call = callApi(endpoint, method, token, json)
         .then(handleResponse)
