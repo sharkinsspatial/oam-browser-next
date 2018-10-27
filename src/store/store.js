@@ -10,6 +10,7 @@ import routes from '../constants/routes';
 import locationMiddleware from './locationMiddleware';
 import apiMiddleware from './apiMiddleware';
 import filterMiddleware from './filterMiddleware';
+import uploadMiddleware from './uploadMiddleware';
 
 
 const {
@@ -34,7 +35,8 @@ const store = createStore(
       routerMiddleware,
       locationMiddleware,
       apiMiddleware,
-      filterMiddleware
+      filterMiddleware,
+      uploadMiddleware
     )
   )
 );

@@ -5,11 +5,12 @@ import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import { Fragment } from 'redux-little-router';
+import { Fragment as RouteFragment } from 'redux-little-router';
 import Login from './Login';
 import LogoIcon from './LogoIcon';
 import Map from './Map';
 import ImageItems from './ImageItems';
+import UploadForm from './UploadForm';
 
 const styles = theme => ({
   root: {
@@ -36,30 +37,38 @@ const styles = theme => ({
 export const Container = (props) => {
   const { classes } = props;
   return (
-    <Fragment forRoute="/">
-      <div className={classes.root}>
-        <AppBar
-          position="static"
-          color="default"
-          className={classes.appBar}
-        >
-          <Toolbar>
-            <LogoIcon className={classes.logoIcon} />
-            <Typography
-              variant="title"
-              color="inherit"
-            >
-              OpenAerialMap
-            </Typography>
-            <div
-              className={classes.rightToolbar}
-            >
-              <Login>
-                Login
-              </Login>
-            </div>
-          </Toolbar>
-        </AppBar>
+    <div className={classes.root}>
+      <AppBar
+        position="static"
+        color="default"
+        className={classes.appBar}
+      >
+        <Toolbar>
+          <LogoIcon className={classes.logoIcon} />
+          <Typography
+            variant="title"
+            color="inherit"
+          >
+            OpenAerialMap
+          </Typography>
+          <div
+            className={classes.rightToolbar}
+          >
+            <Login>
+              Login
+            </Login>
+          </div>
+        </Toolbar>
+      </AppBar>
+      <RouteFragment forRoute="/uploads">
+        <UploadForm />
+      </RouteFragment>
+      <RouteFragment
+        withConditions={
+          location => location.route === '/'
+          || location.route === '/imageitems/:imageId'
+        }
+      >
         <Grid container spacing={0}>
           <Grid
             className={classes.sidebar}
@@ -68,12 +77,18 @@ export const Container = (props) => {
             sm={6}
             md={4}
           >
-            <Fragment forRoute="/imageitems/:imageId">
-              <div />
-            </Fragment>
-            <Fragment withConditions={location => location.route === '/'}>
+            <RouteFragment forRoute="/imageitems/:imageId">
+              <div>
+                items
+              </div>
+            </RouteFragment>
+            <RouteFragment
+              withConditions={
+                location => location.route === '/'
+              }
+            >
               <ImageItems />
-            </Fragment>
+            </RouteFragment>
           </Grid>
           <Grid
             item
@@ -84,8 +99,8 @@ export const Container = (props) => {
             <Map />
           </Grid>
         </Grid>
-      </div>
-    </Fragment>
+      </RouteFragment>
+    </div>
   );
 };
 
