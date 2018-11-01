@@ -5,7 +5,11 @@ export function sendUpload(metadataFile, imageFile) {
     type: types.SEND_UPLOAD,
     payload: {
       metadataFile,
-      imageFile
+      imageFile,
+      types: {
+        successType: types.SEND_UPLOAD_SUCCEEDED,
+        errorType: types.SEND_UPLOAD_FAILED
+      }
     }
   };
 }

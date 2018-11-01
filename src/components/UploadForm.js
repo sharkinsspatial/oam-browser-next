@@ -2,9 +2,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withFormik } from 'formik';
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 import { sendUpload } from '../actions/uploadActions';
+import FormikTextField from './FormikTextField';
 
 const styles = theme => ({
   button: {
@@ -13,34 +16,115 @@ const styles = theme => ({
   input: {
     display: 'none',
   },
+  grid: {
+    marginTop: '20px'
+  }
 });
 
-const metadata = {
-  provider: 'me',
-  name: 'test'
-};
-
-const image = {
-  image: true
-};
-
-const imageFile = new File([JSON.stringify(image)], 'image.json', { type: 'application/json' });
-const metadataFile = new File([JSON.stringify(metadata)], 'metadata.json', { type: 'application/json' });
-
 export const UploadForm = (props) => {
-  const { sendUpload: sendUploadAction } = props;
+  const {
+    classes,
+    handleSubmit,
+    setValues,
+    values,
+    ...formikFieldProps
+  } = props;
   return (
-    <Button
-      onClick={() => { sendUploadAction(metadataFile, imageFile); }}
+    <Grid
+      container
+      justify="center"
+      className={classes.grid}
     >
-      Upload
-    </Button>
+      <Grid item xs={8}>
+        <form onSubmit={handleSubmit}>
+          <FormikTextField
+            name="email"
+            type="email"
+            label="Email"
+            values={values}
+            {...formikFieldProps}
+          />
+          <br />
+          <FormikTextField
+            name="password"
+            type="password"
+            label="Password"
+            values={values}
+            {...formikFieldProps}
+          />
+          <br />
+          <br />
+          <input
+            name="file"
+            accept="image/*"
+            className={classes.input}
+            id="raised-button-file"
+            type="file"
+            onChange={(event) => {
+              const newValues = { ...values };
+              newValues[event.currentTarget.name] = event.currentTarget.files[0];
+              setValues(newValues);
+            }}
+          />
+          <label htmlFor="raised-button-file">
+            <Button
+              component="span"
+              className={classes.button}
+            >
+              Upload
+            </Button>
+          </label>
+          <br />
+          <br />
+          <Button
+            className={classes.button}
+            type="submit"
+          >
+             Submit
+          </Button>
+        </form>
+      </Grid>
+    </Grid>
   );
 };
 
+const validate = (values) => {
+  const errors = {};
+  if (!values.email) {
+    errors.email = 'Required';
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)
+  ) {
+    errors.email = 'Invalid email address';
+  }
+  return errors;
+};
+
+const EnhancedUploadForm = withFormik({
+  mapPropsToValues: () => ({ email: '', password: '' }),
+
+  // Custom sync validation
+  validate,
+
+  handleSubmit: (values, { props, setSubmitting }) => {
+    const { sendUpload: sendUploadAction } = props;
+    const metadata = JSON.stringify(values, null, 2);
+    delete metadata.file;
+    const metadataFile = new File([metadata], 'metadata.json',
+      { type: 'application/json' });
+    sendUploadAction(metadataFile, values.file);
+    setSubmitting(false);
+  }
+})(UploadForm);
+
 UploadForm.propTypes = {
-  sendUpload: PropTypes.func.isRequired
+  classes: PropTypes.shape({
+    button: PropTypes.string.isRequired,
+    input: PropTypes.string.isRequired,
+    grid: PropTypes.string.isRequired
+  }).isRequired,
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 const mapDispatchToProps = { sendUpload };
-export default withStyles(styles)(connect(null, mapDispatchToProps)(UploadForm));
+export default withStyles(styles)(connect(null, mapDispatchToProps)(EnhancedUploadForm));
