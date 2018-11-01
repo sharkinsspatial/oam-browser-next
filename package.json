@@ -37,7 +37,8 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "scroll-into-view-if-needed": "^2.2.16",
-    "typeface-roboto": "^0.0.54"
+    "typeface-roboto": "^0.0.54",
+    "yup": "^0.26.6"
   },
   "scripts": {
     "test": "NODE_ENV=test ./node_modules/.bin/tape ./test/test.js",
