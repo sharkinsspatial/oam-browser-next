@@ -62,6 +62,7 @@ export const UploadForm = (props) => {
             type="file"
             onChange={(event) => {
               const newValues = { ...values };
+              // eslint-disable-next-line prefer-destructuring
               newValues[event.currentTarget.name] = event.currentTarget.files[0];
               setValues(newValues);
             }}
@@ -124,6 +125,8 @@ UploadForm.propTypes = {
     grid: PropTypes.string.isRequired
   }).isRequired,
   handleSubmit: PropTypes.func.isRequired,
+  setValues: PropTypes.func.isRequired,
+  values: PropTypes.object.isRequired
 };
 
 const mapDispatchToProps = { sendUpload };
