@@ -17,7 +17,7 @@ const styles = theme => ({
   paper: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2
   },
   button: {
     margin: theme.spacing.unit,
@@ -52,18 +52,17 @@ export const UploadForm = (props) => {
         <Paper className={classes.paper}>
           <form onSubmit={handleSubmit}>
             <FormikTextField
-              name="email"
-              type="email"
-              label="Email"
+              name="title"
+              label="Title"
               values={values}
               {...formikFieldProps}
             />
             <br />
             <FormikTextField
-              name="password"
-              type="password"
-              label="Password"
+              name="instrument"
+              label="Instrument"
               values={values}
+              helperText="Type or model of image sensor or camera used (ex: Worldview-3)."
               {...formikFieldProps}
             />
             <br />
@@ -96,12 +95,9 @@ export const UploadForm = (props) => {
 
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg'];
 const UploadSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email')
-    .required('Required'),
-  password: Yup.string()
-    .min(4, 'Too Short!')
-    .required('Required'),
+  title: Yup.string()
+    .required('A title is required'),
+  instrument: Yup.string(),
   file: Yup.mixed()
     .required('A file is required')
     .test(

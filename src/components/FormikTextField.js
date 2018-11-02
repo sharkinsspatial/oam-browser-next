@@ -12,7 +12,8 @@ const FormikTextField = (props) => {
     errors,
     values,
     label,
-    type
+    type,
+    helperText
   } = props;
 
   const fieldError = getIn(errors, name);
@@ -30,15 +31,20 @@ const FormikTextField = (props) => {
       onChange={handleChange}
       onBlur={handleBlur}
       helperText={
-        fieldError
+        (fieldError
         && showError
-        && String(fieldError)
+        && String(fieldError))
+        || helperText
       }
       error={
-        Boolean(errors.email && touched.email)
+        Boolean(errors[name] && touched[name])
       }
     />
   );
+};
+
+FormikTextField.defaultProps = {
+  helperText: ''
 };
 
 FormikTextField.propTypes = {
@@ -49,7 +55,8 @@ FormikTextField.propTypes = {
   errors: PropTypes.object.isRequired,
   values: PropTypes.object.isRequired,
   label: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['email', 'password']).isRequired
+  type: PropTypes.oneOf(['email', 'password']).isRequired,
+  helperText: PropTypes.string
 };
 
 export default FormikTextField;
