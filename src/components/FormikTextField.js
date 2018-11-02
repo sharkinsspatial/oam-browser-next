@@ -12,7 +12,6 @@ const FormikTextField = (props) => {
     errors,
     values,
     label,
-    type,
     helperText
   } = props;
 
@@ -22,7 +21,6 @@ const FormikTextField = (props) => {
   return (
     <TextField
       name={name}
-      type={type}
       label={label}
       variant="outlined"
       margin="normal"
@@ -55,7 +53,6 @@ FormikTextField.propTypes = {
   errors: PropTypes.object.isRequired,
   values: PropTypes.object.isRequired,
   label: PropTypes.string.isRequired,
-  type: PropTypes.oneOf(['email', 'password']).isRequired,
   helperText: PropTypes.string
 };
 

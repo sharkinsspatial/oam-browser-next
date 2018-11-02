@@ -8,10 +8,13 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import FormLabel from '@material-ui/core/FormLabel';
 import { withStyles } from '@material-ui/core/styles';
 import { sendUpload } from '../actions/uploadActions';
 import FormikTextField from './FormikTextField';
 import FormikFileSelect from './FormikFileSelect';
+import FormikPlatformPicker from './FormikPlatformPicker';
+import FormikDatePicker from './FormikDatePicker';
 
 const styles = theme => ({
   paper: {
@@ -67,6 +70,32 @@ export const UploadForm = (props) => {
             />
             <br />
             <br />
+            <FormLabel component="legend">
+              Platform
+            </FormLabel>
+            <FormikPlatformPicker
+              name="platform"
+              values={values}
+              {...formikFieldProps}
+            />
+            <br />
+            <FormLabel component="legend">
+              Date Range
+            </FormLabel>
+            <FormikDatePicker
+              name="startdatetime"
+              label="Start Date"
+              values={values}
+              {...formikFieldProps}
+            />
+            <FormikDatePicker
+              name="enddatetime"
+              label="End Date"
+              values={values}
+              {...formikFieldProps}
+            />
+            <br />
+            <br />
             <FormikFileSelect
               name="file"
               values={values}
@@ -97,7 +126,8 @@ const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg'];
 const UploadSchema = Yup.object().shape({
   title: Yup.string()
     .required('A title is required'),
-  instrument: Yup.string(),
+  instrument: Yup.string()
+    .required('An instrument is required'),
   file: Yup.mixed()
     .required('A file is required')
     .test(
@@ -108,7 +138,13 @@ const UploadSchema = Yup.object().shape({
 });
 
 const EnhancedUploadForm = withFormik({
-  mapPropsToValues: () => ({ email: '', password: '' }),
+  mapPropsToValues: () => ({
+    title: '',
+    instrument: '',
+    platform: 'satellite',
+    startdatetime: new Date(Date.now()).toISOString().substring(0, 16),
+    enddatetime: new Date(Date.now()).toISOString().substring(0, 16),
+  }),
 
   validationSchema: UploadSchema,
 
