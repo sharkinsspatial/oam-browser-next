@@ -46,7 +46,7 @@ export const Container = (props) => {
         <Toolbar>
           <LogoIcon className={classes.logoIcon} />
           <Typography
-            variant="title"
+            variant="h6"
             color="inherit"
           >
             OpenAerialMap

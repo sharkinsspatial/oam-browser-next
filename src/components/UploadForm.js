@@ -7,6 +7,7 @@ import * as Yup from 'yup';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import FormLabel from '@material-ui/core/FormLabel';
 import { withStyles } from '@material-ui/core/styles';
@@ -53,6 +54,9 @@ export const UploadForm = (props) => {
     >
       <Grid item xs={8}>
         <Paper className={classes.paper}>
+        <Typography variant="h4">
+          Upload Imagery
+        </Typography>
           <form onSubmit={handleSubmit}>
             <FormikTextField
               name="title"
@@ -66,6 +70,22 @@ export const UploadForm = (props) => {
               label="Instrument"
               values={values}
               helperText="Type or model of image sensor or camera used (ex: Worldview-3)."
+              {...formikFieldProps}
+            />
+            <br />
+            <FormikTextField
+              name="provider"
+              label="Provider"
+              values={values}
+              helperText="Name of company or individual that collected or provided the imagery."
+              {...formikFieldProps}
+            />
+            <br />
+            <FormikTextField
+              name="tags"
+              label="Tags"
+              values={values}
+              helperText="Comma seperated list of metadata tags"
               {...formikFieldProps}
             />
             <br />
@@ -106,6 +126,25 @@ export const UploadForm = (props) => {
             />
             <br />
             <br />
+            <Paper className={classes.paper}>
+              <Typography variant="body2" gutterBottom>
+                By submitting imagery to OpenAerialMap, you agree to place
+                your imagery into the
+                {' '}
+                <a href="https://github.com/openimagerynetwork/oin-register#open-imagery-network">
+                 Open Imagery Network (OIN).
+                </a>
+                {'  '}
+                All imagery contained in OIN is licensed
+                {' '}
+                <a href="https://creativecommons.org/licenses/by/4.0/">
+                  CC-BY 4.0
+                </a>
+                ,
+                with attribution as contributors of OIN.  All imagery is
+                available for tracing in OpenStreetMap.
+              </Typography>
+            </Paper>
             <div className={classes.submit}>
               <Button
                 className={classes.button}
@@ -141,16 +180,26 @@ const UploadSchema = Yup.object().shape({
   startdatetime: Yup.date()
     .required('A start date is required'),
   enddatetime: Yup.date()
-    .required('An end date is required')
+    .required('An end date is required'),
+  provider: Yup.string()
+    .required('A provider is required'),
+  tags: Yup.string()
+    .matches(/^\w(\s*,?\s*\w)*$/,
+      {
+        message: 'Must be a comma separated list',
+        excludeEmptyString: true
+      })
 });
 
 const EnhancedUploadForm = withFormik({
   mapPropsToValues: () => ({
     title: '',
     instrument: '',
+    provider: '',
+    tags: '',
     platform: 'satellite',
     startdatetime: new Date().toISOString().substring(0, 10),
-    enddatetime: new Date().toISOString().substring(0, 10),
+    enddatetime: new Date().toISOString().substring(0, 10)
   }),
 
   validationSchema: UploadSchema,
