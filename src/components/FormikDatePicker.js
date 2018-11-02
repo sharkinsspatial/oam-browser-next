@@ -16,21 +16,30 @@ const styles = theme => ({
 const FormikDatePicker = (props) => {
   const {
     name,
-    classes,
     handleChange,
+    errors,
     values,
-    label
+    label,
+    classes
   } = props;
 
+  const fieldError = getIn(errors, name);
   const value = getIn(values, name);
-
   return (
     <TextField
+      name={name}
       label={label}
-      type="datetime-local"
+      type="date"
       onChange={handleChange}
       defaultValue={value}
       className={classes.textField}
+      helperText={
+        (fieldError
+        && String(fieldError))
+      }
+      error={
+        Boolean(errors[name])
+      }
       InputLabelProps={{
         shrink: true,
       }}
@@ -43,6 +52,7 @@ FormikDatePicker.propTypes = {
   classes: PropTypes.object.isRequired,
   handleChange: PropTypes.func.isRequired,
   values: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
   label: PropTypes.string.isRequired
 };
 

@@ -96,6 +96,9 @@ export const UploadForm = (props) => {
             />
             <br />
             <br />
+            <FormLabel component="legend">
+              Imagery Location
+            </FormLabel>
             <FormikFileSelect
               name="file"
               values={values}
@@ -134,7 +137,11 @@ const UploadSchema = Yup.object().shape({
       'fileFormat',
       'Unsupported Format',
       value => value && SUPPORTED_FORMATS.includes(value.type)
-    )
+    ),
+  startdatetime: Yup.date()
+    .required('A start date is required'),
+  enddatetime: Yup.date()
+    .required('An end date is required')
 });
 
 const EnhancedUploadForm = withFormik({
@@ -142,8 +149,8 @@ const EnhancedUploadForm = withFormik({
     title: '',
     instrument: '',
     platform: 'satellite',
-    startdatetime: new Date(Date.now()).toISOString().substring(0, 16),
-    enddatetime: new Date(Date.now()).toISOString().substring(0, 16),
+    startdatetime: new Date().toISOString().substring(0, 10),
+    enddatetime: new Date().toISOString().substring(0, 10),
   }),
 
   validationSchema: UploadSchema,

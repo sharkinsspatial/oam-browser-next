@@ -11,7 +11,11 @@ const styles = theme => ({
   },
   fileNameLabel: {
     display: 'inline-block',
-    marginLeft: theme.spacing.unit
+    marginLeft: theme.spacing.unit,
+    marginTop: theme.spacing.unit
+  },
+  button: {
+    marginTop: theme.spacing.unit
   }
 });
 
@@ -42,6 +46,7 @@ const FormikFileSelect = (props) => {
         <Button
           component="span"
           variant="outlined"
+          className={classes.button}
         >
           Select Local File
         </Button>
