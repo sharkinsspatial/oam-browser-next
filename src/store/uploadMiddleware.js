@@ -1,11 +1,27 @@
+/* global File */
 import buffer from 'buffer';
 import crypto from 'crypto';
 import Evaporate from 'evaporate';
+import uuid from 'uuid/v1';
 import { getToken } from '../utils/tokens';
 import { setHasValidToken } from '../actions/authActions';
 import { SEND_UPLOAD } from '../constants/action_types';
 
-const upload = async (metadataFile, imageFile, token) => {
+const renameImageFile = (imageFile, id) => {
+  const extension = imageFile.name.split('.').pop();
+  const idFileName = `${id}.${extension}`;
+  const idFile = new File([imageFile], idFileName, { type: imageFile.type });
+  return idFile;
+};
+
+const createMetadataFile = (values, id) => {
+  const metadata = JSON.stringify(values, null, 2);
+  const metadataFile = new File([metadata], `${id}.json`,
+    { type: 'application/json' });
+  return metadataFile;
+};
+
+const upload = async (values, token) => {
   const signerUrl = `${process.env.REACT_APP_API_URL}/signupload`;
   const bucket = process.env.REACT_APP_UPLOAD_BUCKET;
   const awsKey = process.env.REACT_APP_AWS_KEY;
@@ -28,9 +44,12 @@ const upload = async (metadataFile, imageFile, token) => {
     }
   });
   try {
+    const id = uuid();
+    const idFile = renameImageFile(values.file, id);
+    const metadataFile = createMetadataFile(values, id);
     await evaporate.add({
-      name: imageFile.name,
-      file: imageFile
+      name: idFile.name,
+      file: idFile
     });
 
     await evaporate.add({
@@ -51,8 +70,8 @@ const uploadMiddleware = store => next => (action) => {
     if (!token) {
       returnValue = store.dispatch(setHasValidToken(false));
     } else {
-      const { metadataFile, imageFile } = action.payload;
-      returnValue = upload(metadataFile, imageFile, `Bearer ${token}`);
+      const { values } = action.payload;
+      returnValue = upload(values, `Bearer ${token}`);
     }
   }
   return returnValue;

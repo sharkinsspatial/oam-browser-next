@@ -1,11 +1,10 @@
 import * as types from '../constants/action_types';
 
-export function sendUpload(metadataFile, imageFile) {
+export function sendUpload(values) {
   return {
     type: types.SEND_UPLOAD,
     payload: {
-      metadataFile,
-      imageFile,
+      values,
       types: {
         successType: types.SEND_UPLOAD_SUCCEEDED,
         errorType: types.SEND_UPLOAD_FAILED

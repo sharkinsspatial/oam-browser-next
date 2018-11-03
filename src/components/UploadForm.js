@@ -1,4 +1,3 @@
-/* global File */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -208,11 +207,7 @@ const EnhancedUploadForm = withFormik({
 
   handleSubmit: (values, { props, setSubmitting }) => {
     const { sendUpload: sendUploadAction } = props;
-    const metadata = JSON.stringify(values, null, 2);
-    delete metadata.file;
-    const metadataFile = new File([metadata], 'metadata.json',
-      { type: 'application/json' });
-    sendUploadAction(metadataFile, values.file);
+    sendUploadAction(values);
     setSubmitting(false);
   }
 })(UploadForm);

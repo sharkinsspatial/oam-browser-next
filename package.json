@@ -38,6 +38,7 @@
     "reselect": "^3.0.1",
     "scroll-into-view-if-needed": "^2.2.16",
     "typeface-roboto": "^0.0.54",
+    "uuid": "^3.3.2",
     "yup": "^0.26.6"
   },
   "scripts": {
