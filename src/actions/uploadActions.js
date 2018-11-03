@@ -12,3 +12,23 @@ export function sendUpload(values) {
     }
   };
 }
+
+export function startUpload(id, originalName) {
+  return {
+    type: types.START_UPLOAD,
+    payload: {
+      id,
+      originalName
+    }
+  };
+}
+
+export function uploadProgress(id, progress) {
+  return {
+    type: types.UPLOAD_PROGRESS,
+    payload: {
+      id,
+      progress
+    }
+  };
+}

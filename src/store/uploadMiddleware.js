@@ -5,6 +5,7 @@ import Evaporate from 'evaporate';
 import uuid from 'uuid/v1';
 import { getToken } from '../utils/tokens';
 import { setHasValidToken } from '../actions/authActions';
+import { startUpload, uploadProgress } from '../actions/uploadActions';
 import { SEND_UPLOAD } from '../constants/action_types';
 
 const renameImageFile = (imageFile, id) => {
@@ -21,7 +22,7 @@ const createMetadataFile = (values, id) => {
   return metadataFile;
 };
 
-const upload = async (values, token) => {
+const upload = async (values, token, store) => {
   const signerUrl = `${process.env.REACT_APP_API_URL}/signupload`;
   const bucket = process.env.REACT_APP_UPLOAD_BUCKET;
   const awsKey = process.env.REACT_APP_AWS_KEY;
@@ -41,15 +42,24 @@ const upload = async (values, token) => {
     xhrWithCredentials: false,
     signHeaders: {
       Authorization: token
-    }
+    },
+    progressIntervalMS: 3000
   });
   try {
     const id = uuid();
-    const idFile = renameImageFile(values.file, id);
+    const imageFile = renameImageFile(values.file, id);
     const metadataFile = createMetadataFile(values, id);
     await evaporate.add({
-      name: idFile.name,
-      file: idFile
+      name: imageFile.name,
+      file: imageFile,
+      started: () => {
+        const { name } = values.file;
+        store.dispatch(startUpload(id, name));
+      },
+      progress: (progress) => {
+        const p = progress * 100;
+        store.dispatch(uploadProgress(id, p));
+      },
     });
 
     await evaporate.add({
@@ -71,7 +81,7 @@ const uploadMiddleware = store => next => (action) => {
       returnValue = store.dispatch(setHasValidToken(false));
     } else {
       const { values } = action.payload;
-      returnValue = upload(values, `Bearer ${token}`);
+      returnValue = upload(values, `Bearer ${token}`, store);
     }
   }
   return returnValue;
