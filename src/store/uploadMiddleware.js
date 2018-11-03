@@ -43,16 +43,19 @@ const upload = async (metadataFile, imageFile, token) => {
 };
 
 const uploadMiddleware = store => next => (action) => {
+  let returnValue;
   if (action.type !== SEND_UPLOAD) {
-    return next(action);
-  }
-  const token = getToken();
-  if (!token) {
-    store.dispatch(setHasValidToken(false));
+    returnValue = next(action);
   } else {
-    const { metadataFile, imageFile } = action.payload;
-    return upload(metadataFile, imageFile, `Bearer ${token}`);
+    const token = getToken();
+    if (!token) {
+      returnValue = store.dispatch(setHasValidToken(false));
+    } else {
+      const { metadataFile, imageFile } = action.payload;
+      returnValue = upload(metadataFile, imageFile, `Bearer ${token}`);
+    }
   }
+  return returnValue;
 };
 
 export default uploadMiddleware;

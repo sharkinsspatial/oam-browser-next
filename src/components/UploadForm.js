@@ -16,6 +16,7 @@ import FormikTextField from './FormikTextField';
 import FormikFileSelect from './FormikFileSelect';
 import FormikPlatformPicker from './FormikPlatformPicker';
 import FormikDatePicker from './FormikDatePicker';
+import TokenExpiredWarning from './TokenExpiredWarning';
 
 const styles = theme => ({
   paper: {
@@ -54,9 +55,9 @@ export const UploadForm = (props) => {
     >
       <Grid item xs={8}>
         <Paper className={classes.paper}>
-        <Typography variant="h4">
-          Upload Imagery
-        </Typography>
+          <Typography variant="h4">
+            Upload Imagery
+          </Typography>
           <form onSubmit={handleSubmit}>
             <FormikTextField
               name="title"
@@ -160,6 +161,7 @@ export const UploadForm = (props) => {
           </form>
         </Paper>
       </Grid>
+      <TokenExpiredWarning />
     </Grid>
   );
 };
