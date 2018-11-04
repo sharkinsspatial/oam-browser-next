@@ -165,7 +165,7 @@ export const UploadForm = (props) => {
   );
 };
 
-const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg'];
+const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/tiff'];
 const UploadSchema = Yup.object().shape({
   title: Yup.string()
     .required('A title is required'),

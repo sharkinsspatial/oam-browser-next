@@ -11,6 +11,7 @@ import LogoIcon from './LogoIcon';
 import Map from './Map';
 import ImageItems from './ImageItems';
 import UploadForm from './UploadForm';
+import UploadsProgress from './UploadProgress';
 
 const styles = theme => ({
   root: {
@@ -51,6 +52,7 @@ export const Container = (props) => {
           >
             OpenAerialMap
           </Typography>
+          <UploadsProgress />
           <div
             className={classes.rightToolbar}
           >

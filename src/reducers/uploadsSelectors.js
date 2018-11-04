@@ -4,5 +4,8 @@ const getUploadsState = state => state.uploads;
 
 export const getUploads = createSelector(
   [getUploadsState],
-  getUploadsSelect => getUploadsSelect
+  (getUploadsSelect) => {
+    console.log('Recalc');
+    return getUploadsSelect.toJS();
+  }
 );
