@@ -23,11 +23,12 @@ const styles = theme => ({
     fontSize: 40
   },
   appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer + 1
   },
   sidebar: {
     padding: theme.spacing.unit,
     color: theme.palette.text.secondary,
+    marginTop: '70px'
   },
   rightToolbar: {
     marginLeft: 'auto',
@@ -40,7 +41,7 @@ export const Container = (props) => {
   return (
     <div className={classes.root}>
       <AppBar
-        position="static"
+        position="fixed"
         color="default"
         className={classes.appBar}
       >

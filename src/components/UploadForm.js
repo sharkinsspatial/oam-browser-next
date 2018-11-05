@@ -27,7 +27,7 @@ const styles = theme => ({
     margin: theme.spacing.unit,
   },
   grid: {
-    marginTop: '20px'
+    marginTop: '70px'
   },
   submit: {
     textAlign: 'center'
@@ -82,10 +82,10 @@ export const UploadForm = (props) => {
             />
             <br />
             <FormikTextField
-              name="tags"
-              label="Tags"
+              name="keywords"
+              label="Keywords"
               values={values}
-              helperText="Comma seperated list of metadata tags"
+              helperText="Comma seperated list of metadata keywords"
               {...formikFieldProps}
             />
             <br />
@@ -116,6 +116,7 @@ export const UploadForm = (props) => {
             />
             <br />
             <br />
+            <br />
             <FormLabel component="legend">
               Imagery Location
             </FormLabel>
@@ -124,6 +125,7 @@ export const UploadForm = (props) => {
               values={values}
               setValues={setValues}
             />
+            <br />
             <br />
             <br />
             <Paper className={classes.paper}>
@@ -184,7 +186,7 @@ const UploadSchema = Yup.object().shape({
     .required('An end date is required'),
   provider: Yup.string()
     .required('A provider is required'),
-  tags: Yup.string()
+  keywords: Yup.string()
     .matches(/^\w(\s*,?\s*\w)*$/,
       {
         message: 'Must be a comma separated list',
@@ -205,10 +207,11 @@ const EnhancedUploadForm = withFormik({
 
   validationSchema: UploadSchema,
 
-  handleSubmit: (values, { props, setSubmitting }) => {
+  handleSubmit: (values, { props, setSubmitting, resetForm }) => {
     const { sendUpload: sendUploadAction } = props;
     sendUploadAction(values);
     setSubmitting(false);
+    resetForm();
   }
 })(UploadForm);
 

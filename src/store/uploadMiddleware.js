@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import Evaporate from 'evaporate';
 import uuid from 'uuid/v1';
 import { getToken } from '../utils/tokens';
+import stacMapper from '../utils/stacMapper';
 import { setHasValidToken } from '../actions/authActions';
 import { uploadProgress } from '../actions/uploadActions';
 import { SEND_UPLOAD } from '../constants/action_types';
@@ -15,11 +16,19 @@ const renameImageFile = (imageFile, id) => {
   return idFile;
 };
 
-const createMetadataFile = (values, id) => {
-  const metadata = JSON.stringify(values, null, 2);
-  const metadataFile = new File([metadata], `${id}.json`,
+const createStacFile = (values, id, image) => {
+  const bucket = process.env.REACT_APP_UPLOAD_BUCKET;
+  const updatedValues = Object.assign({}, values, {
+    id,
+    self: `s3://${bucket}/${id}.json`,
+    imageUrl: `s3://${bucket}/${image.name}`,
+    type: image.type
+  });
+  const stacItem = stacMapper(updatedValues);
+  const stacItemString = JSON.stringify(stacItem, null, 2);
+  const stacItemFile = new File([stacItemString], `${id}.json`,
     { type: 'application/json' });
-  return metadataFile;
+  return stacItemFile;
 };
 
 const upload = async (values, token, store) => {
@@ -48,7 +57,7 @@ const upload = async (values, token, store) => {
   try {
     const id = uuid();
     const imageFile = renameImageFile(values.file, id);
-    const metadataFile = createMetadataFile(values, id);
+    const stacFile = createStacFile(values, id, imageFile);
     await evaporate.add({
       name: imageFile.name,
       file: imageFile,
@@ -59,8 +68,8 @@ const upload = async (values, token, store) => {
     });
 
     await evaporate.add({
-      name: metadataFile.name,
-      file: metadataFile
+      name: stacFile.name,
+      file: stacFile
     });
   } catch (err) {
     console.log(err);
