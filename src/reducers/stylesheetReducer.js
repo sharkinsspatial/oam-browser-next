@@ -259,6 +259,10 @@ export default function stylesheetReducer(state = initialState, action) {
       return unSetActiveImageItem(filterItems(state, action.payload));
     }
 
+    case actions.FILTER_ITEM: {
+      return unSetActiveImageItem(filterItems(state, action.payload));
+    }
+
     case actions.FETCH_FILTERED_ITEMS_SUCCEEDED: {
       return setFilteredDataSource(state, action.payload);
     }

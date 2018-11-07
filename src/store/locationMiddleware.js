@@ -6,7 +6,7 @@ import {
   FETCH_FILTERED_ITEMS_FAILED
 } from '../constants/action_types';
 import {
-  filterItems,
+  filterItem,
   setActiveImageItem,
   turnOffPointLayers
 } from '../actions/stylesheetActionCreators';
@@ -29,7 +29,7 @@ const locationMiddleware = store => next => async (action) => {
           type: FETCH_FILTERED_ITEMS_FAILED
         })
       ));
-      store.dispatch(filterItems({
+      store.dispatch(filterItem({
         clusterIds: [],
         featureIds: [imageId]
       }));

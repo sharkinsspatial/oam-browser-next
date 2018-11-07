@@ -23,6 +23,13 @@ export function filterItems(payload) {
   };
 }
 
+export function filterItem(payload) {
+  return {
+    type: types.FILTER_ITEM,
+    payload
+  };
+}
+
 export function setClientSize(payload) {
   return {
     type: types.SET_CLIENT_SIZE,
