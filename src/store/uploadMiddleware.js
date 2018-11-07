@@ -3,7 +3,7 @@ import buffer from 'buffer';
 import crypto from 'crypto';
 import Evaporate from 'evaporate';
 import uuid from 'uuid/v1';
-import { getToken } from '../utils/tokens';
+import { getToken, getTokenUserId } from '../utils/tokens';
 import stacMapper from '../utils/stacMapper';
 import { setHasValidToken } from '../actions/authActions';
 import { uploadProgress } from '../actions/uploadActions';
@@ -16,10 +16,10 @@ const renameImageFile = (imageFile, id) => {
   return idFile;
 };
 
-const createStacFile = (values, id, image) => {
-  const bucket = process.env.REACT_APP_UPLOAD_BUCKET;
+const createStacFile = (values, id, bucket, image, userid) => {
   const updatedValues = Object.assign({}, values, {
     id,
+    userid,
     self: `s3://${bucket}/${id}.json`,
     imageUrl: `s3://${bucket}/${image.name}`,
     type: image.type
@@ -50,14 +50,15 @@ const upload = async (values, token, store) => {
     cloudfront: false,
     xhrWithCredentials: false,
     signHeaders: {
-      Authorization: token
+      Authorization: `Bearer ${token}`
     },
     progressIntervalMS: 1000
   });
   try {
     const id = uuid();
     const imageFile = renameImageFile(values.file, id);
-    const stacFile = createStacFile(values, id, imageFile);
+    const userid = getTokenUserId(token);
+    const stacFile = createStacFile(values, id, bucket, imageFile, userid);
     await evaporate.add({
       name: imageFile.name,
       file: imageFile,
@@ -86,7 +87,7 @@ const uploadMiddleware = store => next => (action) => {
       returnValue = store.dispatch(setHasValidToken(false));
     } else {
       const { values } = action.payload;
-      returnValue = upload(values, `Bearer ${token}`, store);
+      returnValue = upload(values, token, store);
     }
   }
   return returnValue;
