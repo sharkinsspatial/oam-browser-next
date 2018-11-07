@@ -19,9 +19,14 @@ export const ImageItems = (props) => {
   } = props;
   const items = imageItems.map((item) => {
     const id = item.getIn(['properties', 'id']);
-    const thumbnail = item.getIn(['properties', 'thumbnail']);
+    const thumbnail = item.getIn(['assets', 'thumbnail', 'href']);
     const title = item.getIn(['properties', 'title']);
-    const provider = item.getIn(['properties', 'provider']);
+    const provider = item.getIn([
+      'properties',
+      'item:providers',
+      0,
+      'name'
+    ]);
     return (
       <ImageItem
         key={id}
