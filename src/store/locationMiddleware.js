@@ -42,9 +42,8 @@ const locationMiddleware = store => next => async (action) => {
       });
       store.dispatch(turnOffPointLayers());
       store.dispatch(setActiveImageItem(imageId));
-    } else {
-      next(action);
     }
+    next(action);
   } else if (action.type === LOCATION_CHANGED) {
     const { route, params } = action.payload;
     if (route === '/imageitems/:imageId') {
@@ -53,10 +52,9 @@ const locationMiddleware = store => next => async (action) => {
         const imageId = parseInt(params.imageId, 10);
         store.dispatch(turnOffPointLayers());
         store.dispatch(setActiveImageItem(imageId));
-      } else {
-        next(action);
       }
     }
+    next(action);
   } else {
     next(action);
   }
