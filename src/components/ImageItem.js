@@ -83,7 +83,10 @@ class ImageItem extends React.Component {
             <IconButton
               key={id}
               className={classes.icon}
-              onClick={() => push(`/imageitems/${id}`)}
+              onClick={(event) => {
+                event.stopPropagation();
+                push(`/imageitems/${id}`);
+              }}
             >
               <InfoIcon />
             </IconButton>
