@@ -10,6 +10,7 @@ const stacTemplate = {
 export default (updatedValues) => {
   const {
     id,
+    userid,
     self,
     imageUrl,
     type,
@@ -42,12 +43,13 @@ export default (updatedValues) => {
       'eo:platform': platform,
       'eo:instrument': instrument,
       'eo:bands': {},
-      'item:provider': {
+      'item:providers': [{
         name: provider
-      },
+      }],
       'item:license': 'CC-BY-4.0',
       'dtr:start_datetime': new Date(startdatetime).toISOString(),
-      'dtr:end_datetime': new Date(enddatetime).toISOString()
+      'dtr:end_datetime': new Date(enddatetime).toISOString(),
+      'oam:userid': userid
     }
   });
   return stacItem;

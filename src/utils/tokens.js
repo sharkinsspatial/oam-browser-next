@@ -13,6 +13,11 @@ const tokenIsVaild = (token) => {
   return false;
 };
 
+export const getTokenUserId = (token) => {
+  const decoded = jwt.decode(token);
+  return decoded.id;
+};
+
 export const getToken = () => {
   let token;
   const storedToken = localStorage.getItem(key);
