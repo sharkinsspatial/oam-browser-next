@@ -8,7 +8,8 @@ import {
 import {
   filterItem,
   setActiveImageItem,
-  turnOffPointLayers
+  turnOffPointLayers,
+  turnOnPointLayers
 } from '../actions/stylesheetActionCreators';
 import fetchWrapper from '../utils/fetchWrapper';
 import { getStyle } from '../reducers/stylesheetSelectors';
@@ -52,6 +53,11 @@ const locationMiddleware = store => next => async (action) => {
         const imageId = parseInt(params.imageId, 10);
         store.dispatch(turnOffPointLayers());
         store.dispatch(setActiveImageItem(imageId));
+      }
+    } else if (route === '/') {
+      const style = getStyle(store.getState());
+      if (style.size > 0) {
+        store.dispatch(turnOnPointLayers());
       }
     }
     next(action);

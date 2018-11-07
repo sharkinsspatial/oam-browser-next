@@ -51,3 +51,9 @@ export function turnOffPointLayers() {
     type: types.TURN_OFF_POINT_LAYERS
   };
 }
+
+export function turnOnPointLayers() {
+  return {
+    type: types.TURN_ON_POINT_LAYERS
+  };
+}

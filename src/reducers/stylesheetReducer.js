@@ -211,7 +211,7 @@ const setActiveImageItem = (state, payload) => {
   return newState;
 };
 
-const turnOffPointLayers = (state) => {
+const setPointLayersVisibility = (state, visibility) => {
   const {
     clusterLayer,
     clusterCountLayer,
@@ -234,7 +234,7 @@ const turnOffPointLayers = (state) => {
         (layers) => {
           const index = layers
             .findIndex(layer => layer.get('id') === targetLayer);
-          return layers.setIn([index, 'layout', 'visibility'], 'none');
+          return layers.setIn([index, 'layout', 'visibility'], visibility);
         }
       );
     });
@@ -278,7 +278,11 @@ export default function stylesheetReducer(state = initialState, action) {
     }
 
     case actions.TURN_OFF_POINT_LAYERS: {
-      return turnOffPointLayers(state);
+      return setPointLayersVisibility(state, 'none');
+    }
+
+    case actions.TURN_ON_POINT_LAYERS: {
+      return setPointLayersVisibility(state, 'visible');
     }
 
     default: {
