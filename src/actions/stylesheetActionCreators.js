@@ -9,6 +9,13 @@ export function setStyle(style) {
   };
 }
 
+export function setStyleSucceeded() {
+  return {
+    type: types.SET_STYLE_SUCCEEDED,
+    payload: {
+    }
+  };
+}
 export function filterItems(payload) {
   return {
     type: types.FILTER_ITEMS,
@@ -29,5 +36,11 @@ export function setActiveImageItem(imageId) {
     payload: {
       imageId
     }
+  };
+}
+
+export function turnOffPointLayers() {
+  return {
+    type: types.TURN_OFF_POINT_LAYERS
   };
 }

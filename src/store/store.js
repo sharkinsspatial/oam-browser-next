@@ -2,7 +2,7 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { routerForBrowser, initializeCurrentLocation }
   from 'redux-little-router';
 import thunk from 'redux-thunk';
-//import { mapMiddleware } from '@mapbox/mapbox-gl-redux';
+// import { mapMiddleware } from '@mapbox/mapbox-gl-redux';
 import reducer from '../reducers/reducer';
 import stylesheetReducer from '../reducers/stylesheetReducer';
 import authReducer from '../reducers/authReducer';

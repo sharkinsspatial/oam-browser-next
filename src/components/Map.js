@@ -346,6 +346,7 @@ class Map extends Component {
   componentDidMount() {
     const {
       setStyle,
+      setStyleSucceeded,
       filterItems,
       setActiveImageItem,
       setClientSize,
@@ -384,6 +385,7 @@ class Map extends Component {
 
         const style = map.getStyle();
         setStyle(style);
+        setStyleSucceeded();
 
         const { clientHeight, clientWidth } = map.getCanvas();
         setClientSize({ clientWidth, clientHeight });
