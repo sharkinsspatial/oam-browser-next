@@ -43,7 +43,7 @@ test('ImageItem', (t) => {
     .shallow()
     .dive()
     .find(IconButton)
-    .simulate('click');
+    .simulate('click', { stopPropagation: () => {} });
   t.ok(pushStub.calledWith(expectedUrl), 'Calls push with correct url and id');
   t.end();
 });
