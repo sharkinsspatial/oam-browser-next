@@ -21,13 +21,13 @@ const testAction = {
 const setup = () => {
   const token = 'token';
   const getTokenStub = sinon.stub().returns(token);
-  const callApiStub = sinon.stub().resolves(true);
+  const fetchWrapperStub = sinon.stub().resolves(true);
   const store = { dispatch: () => false };
   const dispatch = sinon.stub(store, 'dispatch');
   const nextSpy = sinon.spy();
   return {
     getTokenStub,
-    callApiStub,
+    fetchWrapperStub,
     store,
     dispatch,
     token,
@@ -66,10 +66,10 @@ test('apiMiddleware', (t) => {
   t.end();
 });
 
-test('apiMiddleware', (t) => {
+test('apiMiddleware', async (t) => {
   const {
     getTokenStub,
-    callApiStub,
+    fetchWrapperStub,
     store,
     token,
     nextSpy
@@ -77,34 +77,32 @@ test('apiMiddleware', (t) => {
 
   apiMiddleware.__Rewire__('getToken', getTokenStub);
   const results = 'results';
-  const response = JSON.stringify({ results });
-  callApiStub.resolves(response);
-  apiMiddleware.__Rewire__('callApi', callApiStub);
+  const response = { results };
+  fetchWrapperStub.resolves(response);
+  apiMiddleware.__Rewire__('fetchWrapper', fetchWrapperStub);
 
-  apiMiddleware(store)(nextSpy)(testAction);
+  await apiMiddleware(store)(nextSpy)(testAction);
   const { endpoint, method, json } = testAction.payload;
   t.ok(
-    callApiStub.calledWithExactly(endpoint, method, token, json),
-    'Calls the callApi function with proper arguments'
+    fetchWrapperStub.calledWithExactly(endpoint, method, token, json),
+    'Calls the fetchWrapper function with proper arguments'
   );
-  callApiStub().then(() => {
-    t.equal(
-      nextSpy.firstCall.args[0].payload.json.results, results,
-      'Calls next function with callApi response when succesfull'
-    );
-    t.equal(
-      nextSpy.firstCall.args[0].type,
-      testAction.payload.types.successType,
-      'Calls next function with success action type when succesfull'
-    );
-    t.end();
-  });
+  t.equal(
+    nextSpy.firstCall.args[0].payload.json.results, results,
+    'Calls next function with fetchWrappe response when succesfull'
+  );
+  t.equal(
+    nextSpy.firstCall.args[0].type,
+    testAction.payload.types.successType,
+    'Calls next function with success action type when succesfull'
+  );
+  t.end();
 });
 
-test('apiMiddleware', (t) => {
+test('apiMiddleware', async (t) => {
   const {
     getTokenStub,
-    callApiStub,
+    fetchWrapperStub,
     store,
     nextSpy
   } = setup();
@@ -112,12 +110,10 @@ test('apiMiddleware', (t) => {
   apiMiddleware.__Rewire__('getToken', getTokenStub);
 
   const reject = { message: 'reject' };
-  callApiStub.rejects(reject);
-  apiMiddleware.__Rewire__('callApi', callApiStub);
-  apiMiddleware(store)(nextSpy)(testAction);
-  callApiStub().then().catch(() => {
-    t.equal(nextSpy.firstCall.args[0].error, reject.message);
-    t.equal(nextSpy.firstCall.args[0].type, testAction.payload.types.errorType);
-    t.end();
-  });
+  fetchWrapperStub.rejects(reject);
+  apiMiddleware.__Rewire__('fetchWrapper', fetchWrapperStub);
+  await apiMiddleware(store)(nextSpy)(testAction);
+  t.equal(nextSpy.firstCall.args[0].error, reject.message);
+  t.equal(nextSpy.firstCall.args[0].type, testAction.payload.types.errorType);
+  t.end();
 });
