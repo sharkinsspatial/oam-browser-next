@@ -1,8 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import SvgIcon from '@material-ui/core/SvgIcon';
+import { push } from 'redux-little-router';
 
-const LogoIcon = props => (
-  <SvgIcon {...props} viewBox="0 0 160 160" fontSize="inherit">
+const LogoIcon = ({ push: dispatchPush, ...props }) => (
+  <SvgIcon
+    {...props}
+    viewBox="0 0 160 160"
+    fontSize="inherit"
+    onClick={() => { dispatchPush('/'); }}
+  >
     <path fill="#FFF" d="M0 112L80 0l80 112-16 48-32-8-32-24-32 24-32 8z" />
     <path fill="#E4E8E9" d="M40 128v26l8-2 5.1-24zm16.4-16L80 0 40 56v56z" />
     <path fill="#68C39F" d="M160 112l-40-56v56z" />
@@ -17,4 +25,9 @@ const LogoIcon = props => (
   </SvgIcon>
 );
 
-export default LogoIcon;
+LogoIcon.propTypes = {
+  push: PropTypes.func.isRequired
+};
+
+const mapDispatchToProps = { push };
+export default connect(null, mapDispatchToProps)(LogoIcon);

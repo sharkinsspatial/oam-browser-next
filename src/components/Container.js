@@ -20,7 +20,11 @@ const styles = theme => ({
   logoIcon: {
     marginLeft: -12,
     marginRight: 20,
-    fontSize: 40
+    fontSize: 40,
+    '&:hover': {
+      opacity: 0.5
+    },
+    cursor: 'pointer'
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1
