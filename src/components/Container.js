@@ -3,28 +3,15 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import { Fragment as RouteFragment } from 'redux-little-router';
-import Login from './Login';
-import LogoIcon from './LogoIcon';
+import Toolbar from './Toolbar';
 import Map from './Map';
 import ImageItems from './ImageItems';
 import UploadForm from './UploadForm';
-import UploadsProgress from './UploadProgress';
 
 const styles = theme => ({
   root: {
     flexGrow: 1
-  },
-  logoIcon: {
-    marginLeft: -12,
-    marginRight: 20,
-    fontSize: 40,
-    '&:hover': {
-      opacity: 0.5
-    },
-    cursor: 'pointer'
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1
@@ -33,10 +20,6 @@ const styles = theme => ({
     padding: theme.spacing.unit,
     color: theme.palette.text.secondary,
     marginTop: '70px'
-  },
-  rightToolbar: {
-    marginLeft: 'auto',
-    marginRight: -12,
   }
 });
 
@@ -49,23 +32,7 @@ export const Container = (props) => {
         color="default"
         className={classes.appBar}
       >
-        <Toolbar>
-          <LogoIcon className={classes.logoIcon} />
-          <Typography
-            variant="h6"
-            color="inherit"
-          >
-            OpenAerialMap
-          </Typography>
-          <UploadsProgress />
-          <div
-            className={classes.rightToolbar}
-          >
-            <Login>
-              Login
-            </Login>
-          </div>
-        </Toolbar>
+        <Toolbar />
       </AppBar>
       <RouteFragment forRoute="/uploads">
         <UploadForm />
