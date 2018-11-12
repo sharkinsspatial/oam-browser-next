@@ -12,7 +12,7 @@ import locationMiddleware from './locationMiddleware';
 import apiMiddleware from './apiMiddleware';
 import filterMiddleware from './filterMiddleware';
 import uploadMiddleware from './uploadMiddleware';
-
+import authMiddleware from './authMiddleware';
 
 const {
   reducer: routerReducer,
@@ -38,7 +38,8 @@ const store = createStore(
       locationMiddleware,
       apiMiddleware,
       filterMiddleware,
-      uploadMiddleware
+      uploadMiddleware,
+      authMiddleware
     )
   )
 );

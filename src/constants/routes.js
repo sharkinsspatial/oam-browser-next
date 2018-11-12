@@ -1,8 +1,8 @@
 const routes = {
   '/': {
     title: 'home',
-    '/login': {
-      title: 'login'
+    '/uploads': {
+      title: 'uploads'
     },
     '/imageitems/:imageId': {
       title: 'imageitemdetails'
