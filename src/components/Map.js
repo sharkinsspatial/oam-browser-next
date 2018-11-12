@@ -343,6 +343,24 @@ class Map extends Component {
     }
   }
 
+  applyStyleChanges(style, nextStyle) {
+    const changes = diff(style, nextStyle);
+    if (changes.length > 0) {
+      this.setState({ loading: true });
+    }
+    changes.forEach((change) => {
+      const { map } = this;
+      if (change.command === 'setGeoJSONSourceData') {
+        // This is a workaround patch for updateSource not being
+        // low level enough for a generic apply command - dff.js has also
+        // been patched.
+        map.getSource(change.args[0]).setData(change.args[1]);
+      } else {
+        map[change.command].apply(map, change.args);
+      }
+    });
+  }
+
   componentDidMount() {
     const {
       setStyle,
@@ -350,7 +368,8 @@ class Map extends Component {
       filterItems,
       setActiveImageItem,
       setClientSize,
-      width
+      width,
+      style
     } = this.props;
 
     if (width !== 'xs') {
@@ -383,12 +402,15 @@ class Map extends Component {
           setClientSize({ clientWidth, clientHeight });
         });
 
-        const style = map.getStyle();
-        setStyle(style);
-        setStyleSucceeded();
-
-        const { clientHeight, clientWidth } = map.getCanvas();
-        setClientSize({ clientWidth, clientHeight });
+        const loadedStyle = map.getStyle();
+        if (style.size === 0) {
+          setStyle(loadedStyle);
+          setStyleSucceeded();
+          const { clientHeight, clientWidth } = map.getCanvas();
+          setClientSize({ clientWidth, clientHeight });
+        } else {
+          this.applyStyleChanges(loadedStyle, style.toJS());
+        }
       });
 
       const onMapRender = (e) => {
@@ -408,22 +430,7 @@ class Map extends Component {
     const nextStyle = nextProps.style;
     //  if (!Immutable.is(style, nextStyle)) {
     if (style !== nextStyle) {
-      console.log('Style Change');
-      const changes = diff(style.toJS(), nextStyle.toJS());
-      if (changes.length > 0) {
-        this.setState({ loading: true });
-      }
-      changes.forEach((change) => {
-        const { map } = this;
-        if (change.command === 'setGeoJSONSourceData') {
-          // This is a workaround patch for updateSource not being
-          // low level enough for a generic apply command - dff.js has also
-          // been patched.
-          map.getSource(change.args[0]).setData(change.args[1]);
-        } else {
-          map[change.command].apply(map, change.args);
-        }
-      });
+      this.applyStyleChanges(style.toJS(), nextStyle.toJS());
     }
   }
 
@@ -451,13 +458,15 @@ class Map extends Component {
     return mapDiv;
   }
 }
+
 Map.propTypes = {
   style: ImmutablePropTypes.map.isRequired,
   setStyle: PropTypes.func.isRequired,
   filterItems: PropTypes.func.isRequired,
   setActiveImageItem: PropTypes.func.isRequired,
   setClientSize: PropTypes.func.isRequired,
-  width: PropTypes.string.isRequired
+  width: PropTypes.string.isRequired,
+  setStyleSucceeded: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({
