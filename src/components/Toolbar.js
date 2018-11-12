@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import UploadsProgress from './UploadProgress';
 import Login from './Login';
 import LogoIcon from './LogoIcon';
+import Menu from './Menu';
 
 const styles = () => ({
   logoIcon: {
@@ -41,6 +42,7 @@ const OAMToolbar = (props) => {
           Login
         </Login>
       </div>
+      <Menu />
     </Toolbar>
   );
 };
