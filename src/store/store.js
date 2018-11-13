@@ -1,4 +1,10 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware
+} from 'redux';
+import Immutable from 'immutable';
+import { composeWithDevTools } from 'redux-devtools-extension';
 import { routerForBrowser, initializeCurrentLocation }
   from 'redux-little-router';
 import thunk from 'redux-thunk';
@@ -20,6 +26,12 @@ const {
   enhancer
 } = routerForBrowser({ routes });
 
+const composeEnhancers = composeWithDevTools({
+   serialize: {
+     immutable: Immutable
+   }
+});
+
 const initialState = {};
 const store = createStore(
   combineReducers({
@@ -30,7 +42,7 @@ const store = createStore(
     reducer
   }),
   initialState,
-  compose(
+  composeEnhancers(
     enhancer,
     applyMiddleware(
       thunk,
