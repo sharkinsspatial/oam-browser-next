@@ -10,4 +10,5 @@ const routes = {
   }
 };
 
+export const restrictedRoutes = ['/uploads'];
 export default routes;
