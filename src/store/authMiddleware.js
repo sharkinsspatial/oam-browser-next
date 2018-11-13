@@ -1,16 +1,15 @@
 import { replace, LOCATION_CHANGED } from 'redux-little-router';
-import { getHasValidToken } from '../reducers/authSelectors';
+import { getToken } from '../utils/tokens';
+import { setHasValidToken } from '../actions/authActions';
+import { restrictedRoutes } from '../constants/routes';
 
 export default store => next => (action) => {
-  if (action.type === LOCATION_CHANGED) {
-    const restrictedRoutes = ['/uploads'];
-    if (restrictedRoutes.includes(action.payload.route)) {
-      const hasValidToken = getHasValidToken(store.getState());
-      if (hasValidToken) {
-        next(action);
-      } else {
-        store.dispatch(replace({ pathname: '/' }));
-      }
+  if (action.type === LOCATION_CHANGED
+     && restrictedRoutes.includes(action.payload.route)) {
+    const token = getToken();
+    if (!token) {
+      store.dispatch(setHasValidToken(false));
+      store.dispatch(replace({ pathname: '/' }));
     } else {
       next(action);
     }
