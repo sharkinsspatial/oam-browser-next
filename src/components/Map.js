@@ -399,10 +399,11 @@ class Map extends Component {
         map.on('mouseleave', imagePoints,
           this.offHoverHandler);
 
-        map.on('resize', () => {
+        const resizeHandler = () => {
           const { clientHeight, clientWidth } = map.getCanvas();
           setClientSize({ clientWidth, clientHeight });
-        });
+        };
+        map.on('resize', resizeHandler);
 
         const loadedStyle = map.getStyle();
         if (style.size === 0) {
@@ -420,11 +421,16 @@ class Map extends Component {
           this.setState({ loading: false });
         }
       };
+      this.onMapRender = onMapRender;
 
-      map.on('render', onMapRender);
+      map.on('render', this.onMapRender);
 
       this.map = map;
     }
+  }
+
+  componentWillUnmount() {
+    this.map.off('render', this.onMapRender);
   }
 
   componentWillReceiveProps(nextProps) {
