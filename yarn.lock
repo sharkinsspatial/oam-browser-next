@@ -6395,7 +6395,7 @@ query-string@^4.1.0:
 
 query-string@^5.0.1:
   version "5.1.1"
-  resolved "https://registry.yarnpkg.com/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
+  resolved "http://registry.npmjs.org/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
   dependencies:
     decode-uri-component "^0.2.0"
     object-assign "^4.1.0"
@@ -6778,9 +6778,9 @@ reduce-function-call@^1.0.1:
   dependencies:
     balanced-match "^0.4.2"
 
-redux-little-router@^15.1.1:
-  version "15.1.1"
-  resolved "https://registry.yarnpkg.com/redux-little-router/-/redux-little-router-15.1.1.tgz#cbc1b6102dc9e195b6e5daca5f178fea2f85ad55"
+redux-little-router@^15.1.2:
+  version "15.1.2"
+  resolved "https://registry.yarnpkg.com/redux-little-router/-/redux-little-router-15.1.2.tgz#07809ff39b5c640decc5daace822c18a568b21a8"
   dependencies:
     history "^4.6.1"
     lodash.assign "^4.2.0"
