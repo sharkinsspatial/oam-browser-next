@@ -5,12 +5,14 @@ The next generation of the OpenAerialMap.
 `yarn install`
 Installs necessary dependencies.
 
-The following environment variables are required.  You can copy and rename `.env.sample` to `.env` for use as a template. 
+The following environment variables are required.  You can copy and rename `.env.sample` to `.env` for use as a template.<br>
 `REACT_APP_API_URL` The URL with port of the oam-api.<br>
 `REACT_APP_ACCESS_TOKEN_KEY` The key used for local storage of JWT.<br>
 `REACT_APP_UPLOAD_BUCKET` The S3 bucket for uploads.<br>
 `REACT_APP_AWS_KEY` The non-secret AWS key for signing uploads.<br>
 `REACT_APP_MAPBOX_ACCESS_TOKEN`<br>
+
+Can be used with a local instance of [oam-api-next](https://github.com/sharkinsspatial/oam-api-next) for development.
 
 `yarn start`
 Runs the app in the development mode.
