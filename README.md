@@ -44,7 +44,10 @@ Pure stateless React [components](https://reactjs.org/docs/state-and-lifecycle.h
 
 Any impure actions which may have side effects (asynchronous API requests, interaction with browser local storage) are isolated in Redux [middleware](https://redux.js.org/advanced/middleware).
 
-Cross-cutting actions managed through the use of middleware.
+Cross-cutting actions are also managed through the use of middleware.
 
 The application uses [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/) for map display and management.  When the `Map` React component mounts it loads a [style](https://www.mapbox.com/mapbox-gl-js/style-spec) and some GeoJSON data.  This state is then pushed into the Redux store where all subsequent actions act on this state and provide the Map component with the new updated style via props.  
 
+The application uses [Material-UI](https://material-ui.com/) for UI components and styling.
+
+Individual component style [overrides](https://material-ui.com/customization/overrides/) are acheived using Material UIs own css injection with [JSS](https://cssinjs.org/?v=v9.8.7).
