@@ -14,6 +14,8 @@ import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import * as stylesheetConstants from '../constants/stylesheetConstants';
 import MapLoadingProgress from './MapLoadingProgress';
 
+const accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
+
 const addLayers = (map) => {
   const {
     clusterLayer,
@@ -373,7 +375,7 @@ class Map extends Component {
     } = this.props;
 
     if (width !== 'xs') {
-      mapboxgl.accessToken = 'pk.eyJ1Ijoic2hhcmtpbnMiLCJhIjoiOFRmb0o1SSJ9.PMTjItrVcqcO8xBfgP1pMw';
+      mapboxgl.accessToken = accessToken;
       const mapConfig = {
         container: this.node,
         style: 'mapbox://styles/mapbox/dark-v9',
