@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
@@ -9,6 +9,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Divider from '@material-ui/core/Divider';
 import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import stacImmutableMapper from '../utils/stacImmutableMapper';
@@ -22,6 +23,9 @@ const styles = theme => ({
   thumbnail: {
     maxHeight: 250,
     maxWidth: '100%'
+  },
+  propertyList: {
+    backgroundColor: theme.palette.grey['300']
   }
 }
 );
@@ -32,10 +36,15 @@ const ImageItemDetails = (props) => {
     const {
       thumbnail,
       title,
-      uploaderName
+      uploaderName,
+      provider,
+      startDatetime,
+      instrument
     } = stacImmutableMapper(activeImageItem);
     node = (
-      <Fragment>
+      <div
+        style={{ maxHeight: 'calc(100vh - 70px)', overflowY: 'scroll' }}
+      >
         <CardHeader
           title={title}
           subheader={uploaderName}
@@ -47,22 +56,51 @@ const ImageItemDetails = (props) => {
             <img src={thumbnail} alt="wat" className={classes.thumbnail} />
           </div>
         </Card>
-        <List>
-          <ListItem>
+        <List component="nav">
+          <ListItem button>
             <Avatar>
               <OpenInNewIcon />
             </Avatar>
             <ListItemText primary="Open In iD Editor" />
           </ListItem>
           <Divider />
-          <ListItem>
+          <ListItem button>
             <Avatar>
               <OpenInNewIcon />
             </Avatar>
             <ListItemText primary="Open In JOSM" />
           </ListItem>
+          <Divider />
+          <ListItem button>
+            <Avatar>
+              <FileCopyIcon />
+            </Avatar>
+            <ListItemText primary="Copy TMS Url" />
+          </ListItem>
         </List>
-      </Fragment>
+        <List className={classes.propertyList}>
+          <ListItem>
+            <ListItemText
+              primary="Provider"
+              secondary={provider}
+            />
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <ListItemText
+              primary="Start Date"
+              secondary={new Date(startDatetime).toDateString()}
+            />
+          </ListItem>
+          <Divider />
+          <ListItem>
+            <ListItemText
+              primary="Instrument"
+              secondary={instrument}
+            />
+          </ListItem>
+        </List>
+      </div>
     );
   } else {
     node = (
@@ -70,6 +108,10 @@ const ImageItemDetails = (props) => {
     );
   }
   return node;
+};
+
+ImageItemDetails.propTypes = {
+  activeImageItem: ImmutablePropTypes.Map
 };
 
 const mapStateToProps = state => ({

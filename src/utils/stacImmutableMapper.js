@@ -20,10 +20,20 @@ export default (item) => {
     properties,
     'oam:uploadername'
   ]);
+  const startDatetime = item.getIn([
+    properties,
+    'dtr:start_datetime'
+  ]);
+  const instrument = item.getIn([
+    properties,
+    'eo:instrument'
+  ]);
   return {
     provider,
     thumbnail,
     title,
-    uploaderName
+    uploaderName,
+    startDatetime,
+    instrument
   };
 };
