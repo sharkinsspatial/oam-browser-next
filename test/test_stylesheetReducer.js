@@ -59,13 +59,18 @@ test('stylesheetReducer', (t) => {
   const clusterLayerIndex = layers.findIndex(
     layer => layer.get('id') === clusterLayer
   );
-  const clusterIds = layers.get(clusterLayerIndex).getIn(['filter', 1, 2]);
+  const hasClusterIdCheck = layers.get(clusterLayerIndex).getIn(['filter', 1]);
+
+  t.equal(hasClusterIdCheck.get(0), 'has',
+    'Filters features which do not have a cluster id');
+  t.equal(hasClusterIdCheck.get(1), 'cluster_id',
+    'Filters features which do not have a cluster id');
+  const clusterIds = layers.get(clusterLayerIndex).getIn(['filter', 2, 1, 2]);
 
   t.equal(clusterIds.get(0), action.payload.clusterIds[0],
     'Updates clusterFilter with clusterIds when a cluster is clicked');
 
   t.equal(clusterIds.get(1), action.payload.clusterIds[1],
     'Updates clusterFilter with clusterIds when a cluster is clicked');
-
   t.end();
 });

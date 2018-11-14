@@ -9,12 +9,15 @@ const buildFilters = (clusterIds, featureIds) => {
   let clusterFilter;
   if (clusterIds.length > 1) {
     clusterFilter = [
-      '!',
-      ['match',
-        ['to-number', ['get', 'cluster_id']],
-        clusterIds,
-        true,
-        false
+      'all',
+      ['has', 'cluster_id'],
+      ['!',
+        ['match',
+          ['to-number', ['get', 'cluster_id']],
+          clusterIds,
+          true,
+          false
+        ]
       ]
     ];
   }
