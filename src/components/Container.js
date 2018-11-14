@@ -8,6 +8,7 @@ import Toolbar from './Toolbar';
 import Map from './Map';
 import ImageItems from './ImageItems';
 import UploadForm from './UploadForm';
+import ImageItemDetails from './ImageItemDetails';
 
 const styles = theme => ({
   root: {
@@ -52,9 +53,7 @@ export const Container = (props) => {
             md={4}
           >
             <RouteFragment forRoute="/imageitems/:imageId">
-              <div>
-                items
-              </div>
+              <ImageItemDetails />
             </RouteFragment>
             <RouteFragment
               withConditions={

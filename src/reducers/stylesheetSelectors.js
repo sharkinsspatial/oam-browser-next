@@ -23,3 +23,10 @@ export const getActiveImageItemId = createSelector(
   [getActiveImageState],
   activeImageItemId => activeImageItemId
 );
+
+export const getActiveImageItem = createSelector(
+  [getActiveImageItemId, getFilteredItems],
+  (activeImageId, filteredItems) => (
+    filteredItems.find(feature => feature.get('id') === activeImageId)
+  )
+);
