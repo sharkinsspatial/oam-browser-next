@@ -28,7 +28,6 @@ Builds the app for production to the `build` folder.<br>
 It correctly bundles React in production mode and optimizes the build for the best performance.
 
 The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
 
 ### Design Approach
 
@@ -53,3 +52,5 @@ The application uses [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/) fo
 The application uses [Material-UI](https://material-ui.com/) for UI components and styling.
 
 Individual component style [overrides](https://material-ui.com/customization/overrides/) are acheived using Material UIs own css injection with [JSS](https://cssinjs.org/?v=v9.8.7).
+
+The application store is configured to support the [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for advanced debugging with state rewind and fast forward.
