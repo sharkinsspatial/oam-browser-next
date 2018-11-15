@@ -8,6 +8,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { routerForBrowser, initializeCurrentLocation }
   from 'redux-little-router';
 import thunk from 'redux-thunk';
+import reduxClipboardCopy from 'redux-clipboard-copy';
 // import { mapMiddleware } from '@mapbox/mapbox-gl-redux';
 import reducer from '../reducers/reducer';
 import stylesheetReducer from '../reducers/stylesheetReducer';
@@ -27,9 +28,9 @@ const {
 } = routerForBrowser({ routes });
 
 const composeEnhancers = composeWithDevTools({
-   serialize: {
-     immutable: Immutable
-   }
+  serialize: {
+    immutable: Immutable
+  }
 });
 
 const initialState = {};
@@ -51,7 +52,8 @@ const store = createStore(
       apiMiddleware,
       filterMiddleware,
       uploadMiddleware,
-      authMiddleware
+      authMiddleware,
+      reduxClipboardCopy
     )
   )
 );

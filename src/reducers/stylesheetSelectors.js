@@ -1,6 +1,6 @@
 import { List } from 'immutable';
 import { createSelector } from 'reselect';
-import { filteredItemsSource } from '../constants/stylesheetConstants';
+import { filteredItemsSource, activeImageItemSource } from '../constants/stylesheetConstants';
 
 const getStyleState = state => state.stylesheet.get('style');
 
@@ -29,4 +29,13 @@ export const getActiveImageItem = createSelector(
   (activeImageId, filteredItems) => (
     filteredItems.find(feature => feature.get('id') === activeImageId)
   )
+);
+
+export const getActiveImageItemTMS = createSelector(
+  [getStyle],
+  (style) => {
+    const activeImageItemUrl = style
+      .getIn(['sources', activeImageItemSource, 'url']);
+    return `${activeImageItemUrl}/{z}/{x}/{y}`;
+  }
 );

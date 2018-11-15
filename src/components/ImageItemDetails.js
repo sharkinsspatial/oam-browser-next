@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -11,6 +12,7 @@ import Avatar from '@material-ui/core/Avatar';
 import OpenInNewIcon from '@material-ui/icons/OpenInNew';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import Divider from '@material-ui/core/Divider';
+import { copy } from 'redux-clipboard-copy';
 import * as stylesheetSelectors from '../reducers/stylesheetSelectors';
 import stacImmutableMapper from '../utils/stacImmutableMapper';
 
@@ -24,13 +26,21 @@ const styles = theme => ({
     maxHeight: 250,
     maxWidth: '100%'
   },
+  card: {
+    backgroundColor: theme.palette.grey['100']
+  },
   propertyList: {
     backgroundColor: theme.palette.grey['300']
   }
 }
 );
 const ImageItemDetails = (props) => {
-  const { activeImageItem, classes } = props;
+  const {
+    activeImageItem,
+    classes,
+    activeImageItemTMS,
+    copy: copyToClipboard
+  } = props;
   let node;
   if (activeImageItem && activeImageItem.size > 0) {
     const {
@@ -71,7 +81,14 @@ const ImageItemDetails = (props) => {
             <ListItemText primary="Open In JOSM" />
           </ListItem>
           <Divider />
-          <ListItem button>
+          <ListItem
+            button
+            onClick={() => copyToClipboard({
+              payload: {
+                value: activeImageItemTMS
+              }
+            })}
+          >
             <Avatar>
               <FileCopyIcon />
             </Avatar>
@@ -111,10 +128,15 @@ const ImageItemDetails = (props) => {
 };
 
 ImageItemDetails.propTypes = {
-  activeImageItem: ImmutablePropTypes.Map
+  activeImageItem: ImmutablePropTypes.map,
+  activeImageItemTMS: PropTypes.string
 };
 
 const mapStateToProps = state => ({
-  activeImageItem: stylesheetSelectors.getActiveImageItem(state)
+  activeImageItem: stylesheetSelectors.getActiveImageItem(state),
+  activeImageItemTMS: stylesheetSelectors.getActiveImageItemTMS(state)
 });
-export default withStyles(styles)(connect(mapStateToProps, null)(ImageItemDetails));
+
+const mapDispatchToProps = { copy };
+export default withStyles(styles)(connect(mapStateToProps,
+  mapDispatchToProps)(ImageItemDetails));
