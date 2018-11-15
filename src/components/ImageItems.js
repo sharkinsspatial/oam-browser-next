@@ -18,6 +18,7 @@ const styles = theme => ({
     marginBottom: theme.spacing.unit
   }
 });
+
 export const ImageItems = (props) => {
   const {
     imageItems,
