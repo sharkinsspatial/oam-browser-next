@@ -47,10 +47,14 @@ Any impure actions which may have side effects (asynchronous API requests, inter
 
 Cross-cutting actions are also managed through the use of middleware.
 
-The application uses [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/) for map display and management.  When the `Map` React component mounts it loads a [style](https://www.mapbox.com/mapbox-gl-js/style-spec) and some GeoJSON data.  This state is then pushed into the Redux store where all subsequent actions act on this state and provide the Map component with the new updated style via props.  
+The application uses [Mapbox GL JS](https://www.mapbox.com/mapbox-gl-js/api/) for map display and management.  When the `Map` React component mounts it loads a [style](https://www.mapbox.com/mapbox-gl-js/style-spec) and some GeoJSON data.  This state is then pushed into the Redux store where all subsequent actions act on this state and provide the Map component with the new updated style via props. A more detailed description of this approach is available in this blog [post](https://blog.mapbox.com/mapbox-gl-js-in-a-reactive-application-e08eecf0221b) by Tom Macwright.
 
 The application uses [Material-UI](https://material-ui.com/) for UI components and styling.
 
 Individual component style [overrides](https://material-ui.com/customization/overrides/) are acheived using Material UIs own css injection with [JSS](https://cssinjs.org/?v=v9.8.7).
 
 The application store is configured to support the [redux-devtools-extension](https://github.com/zalmoxisus/redux-devtools-extension) for advanced debugging with state rewind and fast forward.
+
+Because the application makes extensive use of [HOCs](https://reactjs.org/docs/higher-order-components.html), wrapped components are exposed as the default export while raw components are available as a named component.  This allows for unit testing without invoking HOC behavior.
+
+The application uses [tape-await](https://github.com/mbostock/tape-await) to simplify asynchronous test flow for middleware.
